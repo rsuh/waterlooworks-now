@@ -15,8 +15,8 @@
   ],
   "content_scripts": [
     {
-      "matches": ["*"],
-      "js": ["./Scripts/content_script.jsmyscript.js"]
+      "matches": ["<all_urls>"],
+      "js": ["./Scripts/content_script.js"]
     }
-  ],
+  ]
 }
