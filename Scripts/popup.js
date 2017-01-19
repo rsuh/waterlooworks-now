@@ -122,36 +122,20 @@ function renderStatus(statusText) {
 // });
 
 // window.onload = function() {
+//   console.log("blah");
 //   document.getElementById('myButton').onclick = function() {
 //     chrome.tabs.executeScript(null, {file: "content_script.js"});
 //     console.log("blah");
 //   }
 // }
 
-// document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
 
-//   document.getElementById('myButton').addEventListener('click', function() {
-    
-//     var queryInfo = {
-//       active: true,
-//       currentWindow: true
-//     };
-
-//     chrome.tabs.query(queryInfo, function(tab) {
-//       // chrome.tabs.query invokes the callback with a list of tabs that match the
-//       // query. When the popup is opened, there is certainly a window and at least
-//       // one tab, so we can safely assume that |tabs| is a non-empty array.
-//       // A window can only have one active tab at a time, so the array consists of
-//       // exactly one tab.
-//       var tab = tabs[0];
-
-//       var currDocument = document;
-
-//       currDocument.body.style.backgroundColor = "red";
-
-//     });
-//   });
-// });
+  document.getElementById('myButton').onclick = function() {
+    console.log("button clicked");
+    chrome.tabs.executeScript({file: "./Scripts/content_script.js"});
+  };
+});
 
 
 
