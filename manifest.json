@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+
+  "name": "Make WaterlooWorks Great Again",
+  "description": "This extension improves WaterlooWorks",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "./Assets/icon.png", //TODO; change icon pic to something else
+    "default_popup": "popup.html",
+    "default_title": "Click here!"
+  },
+  "permissions": [
+    "tabs", "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*"],
+      "js": ["./Scripts/content_script.jsmyscript.js"]
+    }
+  ],
+}
