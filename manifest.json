@@ -22,5 +22,8 @@
       // "matches": ["https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"],
       "js": ["./js/jquery.min.js", "./js/content_script.js"]
     }
+  ],
+  "web_accessible_resources":[
+    "images/*.png"
   ]
 }
