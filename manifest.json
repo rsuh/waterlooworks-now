@@ -5,10 +5,12 @@
   "description": "This extension improves WaterlooWorks",
   "version": "1.0",
 
+  "author": "Gurpreet Gill and Peyman Gardideh",
+
   "browser_action": {
-    "default_icon": "./Assets/icon.png", //TODO; change icon pic to something else
+    "default_icon": "./images/icon.png", //TODO; change icon pic to something else
     "default_popup": "popup.html",
-    "default_title": "Click here!"
+    "default_title": "MWWGA"
   },
   "permissions": [
     "tabs", "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"
@@ -16,7 +18,7 @@
   "content_scripts": [
     {
       "matches": ["https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"],
-      "js": ["./Scripts/content_script.js"]
+      "js": ["./js/content_script.js"]
     }
   ]
 }
