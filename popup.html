@@ -1,38 +1,28 @@
 <!doctype html>
-<!--
- This page is shown when the extension button is clicked, because the
- "browser_action" field in manifest.json contains the "default_popup" key with
- value "popup.html".
- -->
 <html>
   <head>
-    <title>Make WaterlooWorks Great Again</title>
-<!--     <style>
-      body {
-        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-        font-size: 100%;
-      }
-      #status {
-        /* avoid an excessively wide status text */
-        white-space: pre;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        max-width: 400px;
-      }
-    </style> -->
+    <!-- Bootstrap -->
+    <link href="./css/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./css/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="./css/bootstrap/css/bootstrap.css" rel="stylesheet" />
 
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-     -->
-    <script src="./Scripts/popup.js"></script>
+    <!-- Custom -->
+    <link href="./css/popup.css" rel="stylesheet" />
   </head>
   <body>
-    <!-- <div id="status"></div>
-    <img id="image-result" hidden> -->
-    <button style="width: 100px;" id="myButton">Change Color</button>
+    <div class="row">
+      <div class="col-xs-12 headerArea">
+        <p class="thanks-text">Thanks for <abbr title="Making WaterlooWorks Great Again">MWWGA</abbr>
+          <span class="glyphicon glyphicon-heart"></span>
+        </p>
+      <div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <p class="footerArea">Authors: <a target="_blank" href="https://github.com/gCrew">Gurpreet</a>
+         &#38 <a target="_blank" href="https://github.com/peygar">Peyman</a></p>
+      </div>
+    </div>
   </body>
 </html>
 
