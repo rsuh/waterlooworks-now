@@ -13,12 +13,14 @@
     "default_title": "MWWGA"
   },
   "permissions": [
-    "tabs", "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"
+    "tabs"
+    // "tabs", "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"
   ],
   "content_scripts": [
     {
-      "matches": ["https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"],
-      "js": ["./js/content_script.js"]
+      "matches": ["<all_urls>"],
+      // "matches": ["https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"],
+      "js": ["./js/jquery.min.js", "./js/content_script.js"]
     }
   ]
 }
