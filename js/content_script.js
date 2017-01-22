@@ -43,9 +43,9 @@ function getJobPostingHTML(url) {
 function getParsedHTMLTable(html) {
   var postingDivHtml = $($('#postingDiv', $(html))[0].innerHTML);
 
-  var IsInfoPanelNode =  function(el) {
+  var nodeFilter =  function(el, section) {
     if (el.nodeName.toLowerCase() === "div" && el.className === "panel panel-default"
-      && el.innerText.includes("Job Posting Information")) {
+      && el.innerText.includes(section)) {
       return true;
     } else {
       return false;
@@ -54,31 +54,45 @@ function getParsedHTMLTable(html) {
   }
 
   var jobPostingNode = null;
+  var companyInfoNode = null;
 
   $.each(postingDivHtml, function(i, el) {
-    if (IsInfoPanelNode(el)) {
+
+    if (jobPostingNode && companyInfoNode) return false;
+
+    if (nodeFilter(el, "Job Posting Information")) {
       jobPostingNode = el;
-      return false;
+    } else if (nodeFilter(el, "Company Information")) {
+      companyInfoNode = el;
     }
+
   });
 
-  var tableHtml = $(Array.prototype.slice.call($(jobPostingNode)[0].childNodes).find(node => {
+
+  //Get the "Job Posting Information" table
+  var jobPostingTableHtml = $(Array.prototype.slice.call($(jobPostingNode)[0].childNodes).find(node => {
     if (node.nodeName.toLowerCase() === "div" && node.className === "panel-body") {
       return node.innerHTML;
     }
   }))[0].innerHTML;
+
+  //Get the "Company Information" table
+  var companyInfoTableHtml = $(Array.prototype.slice.call($(companyInfoNode)[0].childNodes).find(node => {
+    if (node.nodeName.toLowerCase() === "div" && node.className === "panel-body") {
+      return node.innerHTML;
+    }
+  }))[0].innerHTML;
+
 
   var infoValueHTMLArray = [];
 
   const infoToInclude = ["Job Title", "Job - City", "Special Job Requirements", "Required Skills",
    "Job Responsibilities", "Compensation and Benefits Information"];
 
+  // Assuming table has rows with two columns. First column describes the actual title such as "Location"
+  // and the second column has the value such as "London" in html
 
-   // Assuming table has rows with two columns. First column describes the actual title such as "Location"
-   // and the second column has the value such as "London" in html
-  var tablerows = $('tr', $(tableHtml)).toArray();
-
-  tablerows.forEach(row => {
+  $('tr', $(jobPostingTableHtml)).toArray().forEach(row => {
     for(var i = 0; i < infoToInclude.length; i++) {
       if (row.children[0].innerHTML.toLowerCase().includes(infoToInclude[i].toLowerCase())) {
         infoValueHTMLArray.push({
@@ -90,12 +104,18 @@ function getParsedHTMLTable(html) {
     }
   });
 
+  $('tr', $(companyInfoTableHtml)).toArray().forEach(row => {
+    if (row.children[0].innerHTML.toLowerCase().includes("organization")) {
+      infoValueHTMLArray.push({
+        "title": "Organization",
+        "content": row.children[1].innerHTML
+      });
+    }
+  })
+
   return infoValueHTMLArray;
 
 }
-
-
-//TODO; add company name
 
 // const baseWaterlooWorksUrl = "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm";
 // var testurl = baseWaterlooWorksUrl + "?action=_-_-xps-CTTTkwP8nQhDoJIOewbWnqrPuPQRFrDd44kyFmhUvbQuOeYbflR2oDiXWCHcVP-yKde07ohfviclaCOPCWOGX-p3HYVMdVhYeL0uqc8DWUdZ7IZFPq4K3A5a5ASN3lzb_WdIIpcA3e0uLeJ-L7vsShVCWtiE995ywlq-jA&initialSearchAction=displayMyProgramJobs&searchType=&accessToPostings=infoForPostings&postingId=5048&npfGroup=&sortDirection=Reverse";
