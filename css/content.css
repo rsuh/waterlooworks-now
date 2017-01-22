@@ -1,0 +1,19 @@
+.infoButton {
+	height: 23px;
+	width: 23px;
+	border: none;
+	outline: none;
+}
+
+.overlayContent {
+	margin: 15px 15px 15px 15px;
+}
+
+.overlayContent h1 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.overlayContent h2 {
+	margin-top: 0px;
+}
