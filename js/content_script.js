@@ -40,7 +40,7 @@ function getJobPostingHTML(url) {
         ...
      }
  */
-function getParsedHTMLTable(html) {
+function getInformationArray(html) {
   var postingDivHtml = $($('#postingDiv', $(html))[0].innerHTML);
 
   var nodeFilter =  function(el, section) {
@@ -116,16 +116,6 @@ function getParsedHTMLTable(html) {
   return infoValueHTMLArray;
 
 }
-
-// const baseWaterlooWorksUrl = "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm";
-// var testurl = baseWaterlooWorksUrl + "?action=_-_-xps-CTTTkwP8nQhDoJIOewbWnqrPuPQRFrDd44kyFmhUvbQuOeYbflR2oDiXWCHcVP-yKde07ohfviclaCOPCWOGX-p3HYVMdVhYeL0uqc8DWUdZ7IZFPq4K3A5a5ASN3lzb_WdIIpcA3e0uLeJ-L7vsShVCWtiE995ywlq-jA&initialSearchAction=displayMyProgramJobs&searchType=&accessToPostings=infoForPostings&postingId=5048&npfGroup=&sortDirection=Reverse";
-
-// getJobPostingHTML(testurl)
-// .then(html => {
-//   var info = getParsedHTMLTable(html);
-//   console.log(info);
-// });
-
 
 
 $(document).ready(function() {
