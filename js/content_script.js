@@ -1,3 +1,5 @@
+var reloadTimeout = null;
+
 /* This function returns the html without opening a new tab for the page
  * accessed the param url. It is assumed that for WaterlooWorks the url will have
  * the format like <baseWaterlooWorksUrl>?<QueryParam>
@@ -188,13 +190,24 @@ function showJobInfoModal(url) {
 				});
 				// let glassDoorLink = result.response.attributionURL;
 				templateDictioary["glassDoorLink"] = result.response.attributionURL;
-				let squareLogo = null;
-				let rating = null;
 				if (perfectMatch != null) {
-					console.log(perfectMatch.overallRating);
-					templateDictioary["glassDoorRating"] = perfectMatch.overallRating;
-					templateDictioary["squareLogo"] = perfectMatch.squareLogo;
-					rating = perfectMatch.rating;
+					templateDictioary["glassDoorRating"]
+						= perfectMatch.overallRating !== null
+						&& perfectMatch.overallRating !== "0"
+						&& perfectMatch.overallRating !== ""
+						? perfectMatch.overallRating : null;
+					templateDictioary["squareLogo"]
+						= perfectMatch.squareLogo !== null
+						&& perfectMatch.squareLogo !== ""
+						? perfectMatch.squareLogo : null;
+					if (perfectMatch.website !== null
+						&& perfectMatch.website !== "") {
+						let companyWebsite = perfectMatch.website;
+						if (companyWebsite.indexOf("http") === -1) {
+							companyWebsite = "https://" + companyWebsite;
+						}
+						templateDictioary["companyWebsite"] = companyWebsite;
+					}
 				}
 
 				let rendered = Mustache.render(template, templateDictioary);
@@ -211,6 +224,8 @@ function showJobInfoModal(url) {
 
 /* This function inserts info buttons into the page along with the action when clicking the button */
 function insertInfoButtons() {
+	// gaurd to make sure we are not adding buttons more than once
+	if ($('.infoButton')[0]) { return; }
 	let moreInfoImageUrl = chrome.extension.getURL("images/moreInfo.png");
 	let buttonCss = {
 		"background": `url(${moreInfoImageUrl}) no-repeat center center`,
@@ -229,6 +244,7 @@ function insertInfoButtons() {
 		})
 		.insertAfter(link);
 	});
+	clearTimeout(reloadTimeout);
 }
 
 /* This function inserts content css link into the page */
@@ -257,6 +273,7 @@ function insertOverlayDiv() {
  * re-add buttons.
  */
 function insertCallBackToReAddButtonsOnPagination() {
+	console.log("WTF");
 	$("<script> function reloadPage() { location.reload() } </script>").appendTo("head");
 
     var passTheCallBack = function(a) {
@@ -310,8 +327,15 @@ $(document).ready(function() {
 	insertContentCSSLink();
 	insertOverlayDiv();
 	insertInfoButtons();
-	insertCallBackToReAddButtonsOnPagination();
+	// insertCallBackToReAddButtonsOnPagination();
     initializeEventListenerForModal();
+
+    $('.container-fluid').on("DOMSubtreeModified", function() {
+	    if(reloadTimeout) {
+	        clearTimeout(reloadTimeout);
+	    }
+	    reloadTimeout = setTimeout(insertInfoButtons, 700);
+	});
 });
 
 
