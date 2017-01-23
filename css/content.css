@@ -17,3 +17,19 @@
 .overlayContent h2 {
 	margin-top: 0px;
 }
+
+#modal-city {
+    font-weight: normal !important;
+}
+
+#modal-job-title {
+    font-weight: bold;
+}
+
+#modal-company-name {
+    text-decoration: underline;
+}
+
+.breakWord {
+    word-break: break-word;
+}

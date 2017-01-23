@@ -15,7 +15,7 @@
  		var inputNameValues = new Object;
 
  		$.each(parsedInitialHtml[0], function(i, el) {
- 			if (el.nodeName.toLowerCase() === "input") {
+ 			if (el && el.nodeName && el.nodeName.toLowerCase() === "input") {
  				inputNameValues[el.name] = el.value;
  			}
  		});
@@ -44,8 +44,9 @@ function getInformationArray(html) {
 	var postingDivHtml = $($('#postingDiv', $(html))[0].innerHTML);
 
 	var nodeFilter =  function(el, section) {
-		if (el.nodeName.toLowerCase() === "div" && el.className === "panel panel-default"
-			&& el.innerText.includes(section)) {
+		if (el && el.nodeName && el.nodeName.toLowerCase() === "div" &&
+            el.className && el.className === "panel panel-default" &&
+            el.innerText && el.innerText.includes(section)) {
 			return true;
 		} else {
 			return false;
@@ -70,7 +71,8 @@ function getInformationArray(html) {
 	var jobPostingTableHtml = $(Array.prototype.slice
 		.call($(jobPostingNode)[0].childNodes)
 		.find(node => {
-	  	if (node.nodeName.toLowerCase() === "div" && node.className === "panel-body") {
+	  	if (node && node.nodeName && node.className &&
+            node.nodeName.toLowerCase() === "div" && node.className === "panel-body") {
 	  		return node.innerHTML;
 	  	}
 	}))[0].innerHTML;
@@ -79,7 +81,8 @@ function getInformationArray(html) {
 	var companyInfoTableHtml = $(Array.prototype.slice
 		.call($(companyInfoNode)[0].childNodes)
 		.find(node => {
-  		if (node.nodeName.toLowerCase() === "div" && node.className === "panel-body") {
+  		if (node && node.nodeName && node.className &&
+            node.nodeName.toLowerCase() === "div" && node.className === "panel-body") {
   			return node.innerHTML;
   		}
   	}))[0].innerHTML;
@@ -98,7 +101,8 @@ function getInformationArray(html) {
 
 	$('tr', $(jobPostingTableHtml)).toArray().forEach(row => {
 		for(var i = 0; i < infoToInclude.length; i++) {
-			if (row.children[0].innerHTML.toLowerCase().includes(infoToInclude[i].toLowerCase())) {
+			if (row && row.children && row.children[0] && row.children[0].innerHTML &&
+                row.children[0].innerHTML.toLowerCase().includes(infoToInclude[i].toLowerCase()) && row.children[1]) {
 				infoValueHTMLArray.push({
 					"title": infoToInclude[i],
 					"content": row.children[1].innerHTML
@@ -109,7 +113,8 @@ function getInformationArray(html) {
 	});
 
 	$('tr', $(companyInfoTableHtml)).toArray().forEach(row => {
-		if (row.children[0].innerHTML.toLowerCase().includes("organization")) {
+		if (row && row.children && row.children[0] && row.children[0].innerHTML &&
+            row.children[0].innerHTML.toLowerCase().includes("organization") && row.children[1]) {
 			infoValueHTMLArray.push({
 				"title": "Organization",
 				"content": row.children[1].innerHTML
@@ -158,18 +163,24 @@ function insertInfoButtons() {
 						} else {
 						rowHTML +=
 							`<tr >
-								<td class="col-xs-2">${row.title}</td>
-								<td class="col-xs-10">${row.content}</td>
+								<td class="col-xs-3">${row.title}</td>
+								<td class="col-xs-9 breakWord">${row.content}</td>
 							</tr>`;
 						}
 					}
+
+                    var hasCity = false;
+                    if (city) {
+                        hasCity = true;
+                    }
 
 					var rendered = Mustache.render(template, {
 						companyName: companyName,
 						jobTitle: jobTitle,
 						city: city,
 						tableContent: rowHTML,
-						glassDoor: "Glassdoor: 4.5/5"
+						glassDoor: "Glassdoor: 4.5/5",
+                        hasCity: hasCity
 					});
 					$("#jobInfoModal").append(rendered);
 				})
@@ -201,4 +212,5 @@ $(document).ready(function() {
 	insertOverlayDiv();
 	insertInfoButtons();
 });
+
 
