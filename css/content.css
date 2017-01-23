@@ -37,9 +37,17 @@
 #modal-company-name {
     margin-top: 0px;
     margin-bottom: 0px;
-    text-decoration: underline;
 }
 
 .breakWord {
     word-break: break-word;
+}
+
+.glassdoor-logo {
+	font-size : 60%;
+}
+
+.company-logo {
+	height: 25px;
+	width: 25px;
 }
