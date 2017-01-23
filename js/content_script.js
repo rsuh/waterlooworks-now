@@ -1,3 +1,5 @@
+var reloadTimeout = null;
+
 /* This function returns the html without opening a new tab for the page
  * accessed the param url. It is assumed that for WaterlooWorks the url will have
  * the format like <baseWaterlooWorksUrl>?<QueryParam>
@@ -222,6 +224,8 @@ function showJobInfoModal(url) {
 
 /* This function inserts info buttons into the page along with the action when clicking the button */
 function insertInfoButtons() {
+	// gaurd to make sure we are not adding buttons more than once
+	if ($('.infoButton')[0]) { return; }
 	let moreInfoImageUrl = chrome.extension.getURL("images/moreInfo.png");
 	let buttonCss = {
 		"background": `url(${moreInfoImageUrl}) no-repeat center center`,
@@ -240,6 +244,7 @@ function insertInfoButtons() {
 		})
 		.insertAfter(link);
 	});
+	clearTimeout(reloadTimeout);
 }
 
 /* This function inserts content css link into the page */
@@ -268,6 +273,7 @@ function insertOverlayDiv() {
  * re-add buttons.
  */
 function insertCallBackToReAddButtonsOnPagination() {
+	console.log("WTF");
 	$("<script> function reloadPage() { location.reload() } </script>").appendTo("head");
 
     var passTheCallBack = function(a) {
@@ -321,8 +327,15 @@ $(document).ready(function() {
 	insertContentCSSLink();
 	insertOverlayDiv();
 	insertInfoButtons();
-	insertCallBackToReAddButtonsOnPagination();
+	// insertCallBackToReAddButtonsOnPagination();
     initializeEventListenerForModal();
+
+    $('.container-fluid').on("DOMSubtreeModified", function() {
+	    if(reloadTimeout) {
+	        clearTimeout(reloadTimeout);
+	    }
+	    reloadTimeout = setTimeout(insertInfoButtons, 700);
+	});
 });
 
 
