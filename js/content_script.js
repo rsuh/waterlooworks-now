@@ -142,8 +142,7 @@ function insertInfoButtons() {
 		.css(buttonCss)
 		.attr({"data-toggle": "modal", "data-target": "#jobInfoModal"})
 		.click(function() {
-			// console.log($("#jobInfoModal").innerHTML);
-			$("#jobInfoModal").html("");
+            $("#jobInfoModal").html("");
 			getJobPostingHTML(link.href).then((result) => {
 				let templateURL = chrome.extension.getURL("overlay_template.html")
 				$.get(templateURL, function(template) {
@@ -183,7 +182,9 @@ function insertInfoButtons() {
                         hasCity: hasCity
 					});
 					$("#jobInfoModal").append(rendered);
-				})
+				}).then(() => {
+                    $("#waitingIcon").fadeOut("slow");
+                })
 			});
 		})
 		.insertAfter(link);
@@ -201,10 +202,14 @@ function insertContentCSSLink() {
 
 /* This function inserts a blank overlay into the page */
 function insertOverlayDiv() {
+    //loading icon thing for job info modal
+    $("body").prepend("<div id='waitingIcon' style='display: none;'></div>");
+
 	$(`<div></div>`)
-	.addClass("modal fade")
+	.addClass("modal")
 	.attr({"id": "jobInfoModal", "role": "dialog"})
 	.appendTo($("body"));
+
 }
 
 /* This function inserts a callback to the onclick handler for page changing.
@@ -222,12 +227,41 @@ function insertCallBackToReAddButtonsOnPagination() {
 		}
 	});
 }
+/* This function is used to show insert an event listener. The purpose is to show
+ * the loading spinner whent he modal dialog for job info is loading.
+ */
+function initializeEventListenerForModal() {
+    // we want to wait for the gray scrollable area to appear to show the
+    // waiting spinning icon.
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (!mutation.addedNodes) return
+
+            for (var i = 0; i < mutation.addedNodes.length; i++) {
+              // do things to your newly added nodes here
+              var node = mutation.addedNodes[i]
+
+              if (node.className === "modal-scrollable") {
+                $("#waitingIcon").css('display', 'block');
+              }
+            }
+        })
+    });
+
+    observer.observe(document.body, {
+        childList: true
+      , subtree: true
+      , attributes: false
+      , characterData: false
+    });
+}
 
 $(document).ready(function() {
 	insertContentCSSLink();
 	insertOverlayDiv();
 	insertInfoButtons();
-	insertCallBackToReAddButtonsOnPagination()
+	insertCallBackToReAddButtonsOnPagination();
+    initializeEventListenerForModal();
 });
 
 
