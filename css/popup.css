@@ -14,7 +14,7 @@ body {
 .footerArea, .headerArea {
   text-align: center;
   font-family:  "Courier New", Courier, monospace;
-  font-size:14px;
+  font-size: 14px;
 }
 
 .headerArea {
@@ -22,7 +22,7 @@ body {
 }
 
 .footerArea, .footerArea a {
-  color:white;
+  color: white;
 }
 
 .thanks-text {
@@ -33,4 +33,9 @@ body {
 
 .thanks-text span {
   top:3px;
+}
+
+.warnings-text {
+  font-size: 10px;
+  line-height: 10px;
 }
