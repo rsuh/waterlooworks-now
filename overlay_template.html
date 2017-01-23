@@ -20,12 +20,21 @@
 					</h2>
 
 				</div>
-				<div class="col-xs-2">
+				<div class="col-xs-2 glassdoor-info">
 				{{#glassDoorLink}}
-					<h2><a href='{{glassDoorLink}}' target="_blank">Company Rating</a>
+					<h2><a href='{{glassDoorLink}}' target="_blank">Company
+						{{#glassDoorRating}}
+							Rating
+						{{/glassDoorRating}}
+						{{^glassDoorRating}}
+							Info
+						{{/glassDoorRating}}
+						</a>
+
 						{{#glassDoorRating}}
 						: {{glassDoorRating}}/5.0
-						{{/glassDoorRating}} -
+						{{/glassDoorRating}}
+
 						<span class="glassdoor-logo">
 							<a href='https://www.glassdoor.ca/index.htm'
 							target="_blank">powered by
