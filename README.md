@@ -20,7 +20,7 @@ it shows the glassdoor rating along with job description and other information r
 
 ## Feedback
 
-If you have anything questions or feedback, feel free to open an issue.
+If you have any questions or feedback, feel free to open an issue.
 
 ## License
 
