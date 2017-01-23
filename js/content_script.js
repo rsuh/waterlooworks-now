@@ -273,7 +273,7 @@ function insertOverlayDiv() {
  * re-add buttons.
  */
 function insertCallBackToReAddButtonsOnPagination() {
-	console.log("WTF");
+	// Call this function if we decide to reload everytime we refresh table
 	$("<script> function reloadPage() { location.reload() } </script>").appendTo("head");
 
     var passTheCallBack = function(a) {
@@ -327,7 +327,6 @@ $(document).ready(function() {
 	insertContentCSSLink();
 	insertOverlayDiv();
 	insertInfoButtons();
-	// insertCallBackToReAddButtonsOnPagination();
     initializeEventListenerForModal();
 
     $('.container-fluid').on("DOMSubtreeModified", function() {
