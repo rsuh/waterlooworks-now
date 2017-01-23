@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "web_accessible_resources":[
+  "web_accessible_resources": [
     "images/*.png",
     "css/content.css",
     "js/mustache.min.js",

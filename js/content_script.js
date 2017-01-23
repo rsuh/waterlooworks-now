@@ -144,7 +144,6 @@ function insertInfoButtons() {
 			// console.log($("#jobInfoModal").innerHTML);
 			$("#jobInfoModal").html("");
 			getJobPostingHTML(link.href).then((result) => {
-				let mustacheURL = chrome.extension.getURL("js/mustache.min.js");
 				let templateURL = chrome.extension.getURL("overlay_template.html")
 				$.get(templateURL, function(template) {
 					let infoArray = getInformationArray(result);
@@ -207,10 +206,27 @@ function insertOverlayDiv() {
 	.appendTo($("body"));
 }
 
+/* This function inserts a callback to the onclick handler for page changing.
+ * As a hacky solution, currently the callback refreshes the entire page to
+ * re-add buttons.
+*/
+function insertCallBackToReAddButtonsOnPagination() {
+	$("<script> function reloadPage() { location.reload() } </script>")
+	.appendTo("head");
+	$(".pagination a").toArray().forEach(a => {
+		var oldFunction = $(a).attr('onclick');
+		if (typeof oldFunction === "string") {
+			var newFunction = oldFunction.replace("null", "reloadPage");
+			$(a).attr("onclick", newFunction);
+		}
+	});
+}
+
 $(document).ready(function() {
 	insertContentCSSLink();
 	insertOverlayDiv();
 	insertInfoButtons();
+	insertCallBackToReAddButtonsOnPagination()
 });
 
 
