@@ -135,7 +135,8 @@ function insertInfoButtons() {
 	};
 
 	$.each($(".searchResult"), function () {
-		var link = $(this).find('td:eq(2)').find('a')[0];
+		let indexOfJobTitle = $("th:contains('Job Title')").index();
+		var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
 		$(`<button> </button>`)
 		.addClass("infoButton btn-info btn-lg")
 		.css(buttonCss)
