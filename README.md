@@ -3,12 +3,9 @@
 It is a simple chrome extension which improves the WaterlooWorks UX and provides few handy features. For example,
 it shows the glassdoor rating along with job description and other information right on the search page in a modal dialog.
 
-## Usage
+## Installation
 
-1. Clone this repo.
-2. Go back to the chrome://extensions/ page and click the Load unpacked extension button.
-3. Make sure the developer mode is on otherewise you will not see Load unpacked extension button.
-4. Choose the repo folder and you are good to go.
+TODO: Link to Google Store
 
 ## Contributing
 
