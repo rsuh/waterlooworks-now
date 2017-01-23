@@ -257,15 +257,24 @@ function insertOverlayDiv() {
  * re-add buttons.
  */
 function insertCallBackToReAddButtonsOnPagination() {
-	$("<script> function reloadPage() { location.reload() } </script>")
-	.appendTo("head");
+	$("<script> function reloadPage() { location.reload() } </script>").appendTo("head");
+
+    var passTheCallBack = function(a) {
+        var oldFunction = $(a).attr('onclick');
+        if (typeof oldFunction === "string") {
+            var newFunction = oldFunction.replace("null", "reloadPage");
+            $(a).attr("onclick", newFunction);
+        }
+    };
+
 	$(".pagination a").toArray().forEach(a => {
-		var oldFunction = $(a).attr('onclick');
-		if (typeof oldFunction === "string") {
-			var newFunction = oldFunction.replace("null", "reloadPage");
-			$(a).attr("onclick", newFunction);
-		}
+        passTheCallBack(a);
 	});
+
+    $("#postingsTable thead a").toArray().forEach(a => {
+        passTheCallBack(a);
+    });
+
 }
 
 /* This function is used to show insert an event listener. The purpose is to show

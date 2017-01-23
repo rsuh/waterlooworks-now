@@ -1,7 +1,7 @@
 body {
   width:250px;
   margin: 0px;
-  padding: 0px; 
+  padding: 0px;
 
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#4c4c4c+0,000000+0,000000+0,595959+1,474747+29,1c1c1c+78,2b2b2b+100,131313+100 */
   background: #4c4c4c; /* Old browsers */
@@ -18,7 +18,7 @@ body {
 }
 
 .headerArea {
-  color: #e6e600;
+  color: rgb(252,212,101);
 }
 
 .footerArea, .footerArea a {
