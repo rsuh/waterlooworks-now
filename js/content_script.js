@@ -188,13 +188,24 @@ function showJobInfoModal(url) {
 				});
 				// let glassDoorLink = result.response.attributionURL;
 				templateDictioary["glassDoorLink"] = result.response.attributionURL;
-				let squareLogo = null;
-				let rating = null;
 				if (perfectMatch != null) {
-					console.log(perfectMatch.overallRating);
-					templateDictioary["glassDoorRating"] = perfectMatch.overallRating;
-					templateDictioary["squareLogo"] = perfectMatch.squareLogo;
-					rating = perfectMatch.rating;
+					templateDictioary["glassDoorRating"]
+						= perfectMatch.overallRating !== null
+						&& perfectMatch.overallRating !== "0"
+						&& perfectMatch.overallRating !== ""
+						? perfectMatch.overallRating : null;
+					templateDictioary["squareLogo"]
+						= perfectMatch.squareLogo !== null
+						&& perfectMatch.squareLogo !== ""
+						? perfectMatch.squareLogo : null;
+					if (perfectMatch.website !== null
+						&& perfectMatch.website !== "") {
+						let companyWebsite = perfectMatch.website;
+						if (companyWebsite.indexOf("http") === -1) {
+							companyWebsite = "https://" + companyWebsite;
+						}
+						templateDictioary["companyWebsite"] = companyWebsite;
+					}
 				}
 
 				let rendered = Mustache.render(template, templateDictioary);

@@ -4,10 +4,17 @@
 			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<div class="row">
 				<h1 id="modal-company-name">
-				{{#squareLogo}}
-				<img class="company-logo img-responsive img-thumbnail" src='{{squareLogo}}' title='{{companyName}}'/>
-				{{/squareLogo}}
-				{{companyName}}</h1>
+					{{#companyWebsite}}
+					<a href='{{companyWebsite}}' target="_blank" title="{{companyName}}">
+					{{/companyWebsite}}
+					{{#squareLogo}}
+					<img class="company-logo img-responsive img-thumbnail" src='{{squareLogo}}' title='{{companyName}}'/>
+					{{/squareLogo}}
+					{{companyName}}
+					{{#companyWebsite}}
+					</a>
+					{{/companyWebsite}}
+				</h1>
 
 			</div>
 			<div class="row">
