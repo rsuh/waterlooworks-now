@@ -8,9 +8,9 @@
   "author": "Gurpreet Gill and Peyman Gardideh",
 
   "browser_action": {
-    "default_icon": "./images/icon.png", //TODO; change icon pic to something else
+    "default_icon": "images/icon.png", //TODO; change icon pic to something else
     "default_popup": "popup.html",
-    "default_title": "MWWGA"
+    "default_title": "MWGA"
   },
   "permissions": [
     "tabs", "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"
@@ -18,10 +18,17 @@
   "content_scripts": [
     {
       "matches": ["https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"],
-      "js": ["./js/jquery.min.js", "./js/content_script.js"]
+      "js": [
+        "js/jquery.min.js",
+        "js/mustache.min.js",
+        "js/content_script.js"
+      ]
     }
   ],
-  "web_accessible_resources":[
-    "images/*.png"
+  "web_accessible_resources": [
+    "images/*.png",
+    "css/content.css",
+    "js/mustache.min.js",
+    "overlay_template.html"
   ]
 }
