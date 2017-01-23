@@ -5,7 +5,9 @@ it shows the glassdoor rating along with job description and other information r
 
 ## Installation
 
-TODO: Link to Google Store
+[Click here](https://chrome.google.com/webstore/detail/make-waterlooworks-great/mlekdinlcaggpokncinbmomaplhbjpmb) to install using Google webstore.
+
+Alternatively, you can clone this repo and add the project folder using 'Load Unpacked Extenson' button in `chrome://extensions/`
 
 ## Contributing
 
