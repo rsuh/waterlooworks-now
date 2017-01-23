@@ -45,9 +45,17 @@
 
 .glassdoor-logo {
 	font-size : 60%;
+    position: relative;
+    border: 2px;
+    float: right;
+}
+
+.glassdoor-info a:hover {
+    text-decoration: none;
 }
 
 .company-logo {
 	height: 25px;
 	width: 25px;
 }
+
