@@ -5,29 +5,26 @@
  * @param {String} url - page url whose html we need to return
  * @return {String} - string defining the html of the page
  */
- function getJobPostingHTML(url) {
+function getJobPostingHTML(url) {
+	return $.get(url, function(html) {
+		return html;
+	}).then((initialHTML) => {
+		var parsedInitialHtml = $.parseHTML(initialHTML);
+		var inputNameValues = new Object;
 
- 	return $.get(url, function(html) {
- 		return html;
- 	})
- 	.then((initialHTML) => {
- 		var parsedInitialHtml = $.parseHTML(initialHTML);
- 		var inputNameValues = new Object;
+		$.each(parsedInitialHtml[0], function(i, el) {
+			if (el && el.nodeName && el.nodeName.toLowerCase() === "input") {
+				inputNameValues[el.name] = el.value;
+			}
+		});
 
- 		$.each(parsedInitialHtml[0], function(i, el) {
- 			if (el && el.nodeName && el.nodeName.toLowerCase() === "input") {
- 				inputNameValues[el.name] = el.value;
- 			}
- 		});
-
- 		return $.ajax({
- 			type: "POST",
- 			url: "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
- 			data: inputNameValues
- 		});
- 	})
- }
-
+		return $.ajax({
+			type: "POST",
+			url: "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
+			data: inputNameValues
+		});
+	})
+}
 
 /* This function returns an array which contains the information to show.
 
@@ -125,6 +122,92 @@ function getInformationArray(html) {
 	return infoValueHTMLArray;
 }
 
+/* This function fetches company info from glassdoor
+
+ * @param {String} companyName - name of the company to search for
+ * @return {String} - ajax promise of the api call
+*/
+function getGlassDoorInfo(companyName) {
+	let parameters = {
+		"t.p": 117950,
+		"t.k": "ghr6GS8Qyqq",
+		"userip": "0.0.0.0",
+		useragent: "Mozilla/5.0 (X11, Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.81 Safari/537.36",
+		format: "json",
+		version: 1,
+		action: "employers",
+		q: companyName
+	}
+
+	return $.ajax({
+			type: "GET",
+			url: "https://api.glassdoor.com/api/api.htm",
+			data: parameters
+	});
+}
+
+/* This function fetches data about job, parses the html and populates info modal
+
+ * @param {String} url - page url for job posting
+ */
+function showJobInfoModal(url) {
+	$("#jobInfoModal").html("");
+	getJobPostingHTML(url).then((result) => {
+		let templateURL = chrome.extension.getURL("overlay_template.html")
+		$.get(templateURL, function(template) {
+			let infoArray = getInformationArray(result);
+			let companyName = ""
+			let city = ""
+			let jobTitle = ""
+			var rowHTML = ""
+			for (var i = 0; i < infoArray.length; i++) {
+				let row = infoArray[i];
+				if (row.title.toLowerCase() === "organization") {
+					companyName = row.content;
+				} else if (row.title.toLowerCase() === "job title") {
+					jobTitle = row.content;
+				} else if (row.title.toLowerCase() === "job - city") {
+					city = row.content;
+				} else {
+				rowHTML +=
+					`<tr >
+						<td class="col-xs-3">${row.title}</td>
+						<td class="col-xs-9 breakWord">${row.content}</td>
+					</tr>`;
+				}
+			}
+			var templateDictioary = {
+				companyName: companyName,
+				jobTitle: jobTitle,
+				city: city,
+				tableContent: rowHTML
+			};
+			getGlassDoorInfo(companyName).then((result) => {
+				let perfectMatch = result.response.employers.find(employer => {
+					return employer.exactMatch;
+				});
+				// let glassDoorLink = result.response.attributionURL;
+				templateDictioary["glassDoorLink"] = result.response.attributionURL;
+				let squareLogo = null;
+				let rating = null;
+				if (perfectMatch != null) {
+					console.log(perfectMatch.overallRating);
+					templateDictioary["glassDoorRating"] = perfectMatch.overallRating;
+					templateDictioary["squareLogo"] = perfectMatch.squareLogo;
+					rating = perfectMatch.rating;
+				}
+
+				let rendered = Mustache.render(template, templateDictioary);
+				$("#jobInfoModal").append(rendered);
+			}, (error) => {
+				let rendered = Mustache.render(template, templateDictioary);
+				$("#jobInfoModal").append(rendered);
+			});
+		}).then(() => {
+			$("#waitingIcon").fadeOut("slow");
+        })
+	});
+}
 
 /* This function inserts info buttons into the page along with the action when clicking the button */
 function insertInfoButtons() {
@@ -142,50 +225,7 @@ function insertInfoButtons() {
 		.css(buttonCss)
 		.attr({"data-toggle": "modal", "data-target": "#jobInfoModal"})
 		.click(function() {
-            $("#jobInfoModal").html("");
-			getJobPostingHTML(link.href).then((result) => {
-				let templateURL = chrome.extension.getURL("overlay_template.html")
-				$.get(templateURL, function(template) {
-					let infoArray = getInformationArray(result);
-					let companyName = ""
-					let city = ""
-					let jobTitle = ""
-					var rowHTML = ""
-					for (var i = 0; i < infoArray.length; i++) {
-						let row = infoArray[i];
-						if (row.title.toLowerCase() === "organization") {
-							companyName = row.content;
-						} else if (row.title.toLowerCase() === "job title") {
-							jobTitle = row.content;
-						} else if (row.title.toLowerCase() === "job - city") {
-							city = row.content;
-						} else {
-						rowHTML +=
-							`<tr >
-								<td class="col-xs-3">${row.title}</td>
-								<td class="col-xs-9 breakWord">${row.content}</td>
-							</tr>`;
-						}
-					}
-
-                    var hasCity = false;
-                    if (city) {
-                        hasCity = true;
-                    }
-
-					var rendered = Mustache.render(template, {
-						companyName: companyName,
-						jobTitle: jobTitle,
-						city: city,
-						tableContent: rowHTML,
-						glassDoor: "Glassdoor: 4.5/5",
-                        hasCity: hasCity
-					});
-					$("#jobInfoModal").append(rendered);
-				}).then(() => {
-                    $("#waitingIcon").fadeOut("slow");
-                })
-			});
+			showJobInfoModal(link.href);
 		})
 		.insertAfter(link);
 	});
@@ -215,7 +255,7 @@ function insertOverlayDiv() {
 /* This function inserts a callback to the onclick handler for page changing.
  * As a hacky solution, currently the callback refreshes the entire page to
  * re-add buttons.
-*/
+ */
 function insertCallBackToReAddButtonsOnPagination() {
 	$("<script> function reloadPage() { location.reload() } </script>")
 	.appendTo("head");
@@ -227,6 +267,7 @@ function insertCallBackToReAddButtonsOnPagination() {
 		}
 	});
 }
+
 /* This function is used to show insert an event listener. The purpose is to show
  * the loading spinner whent he modal dialog for job info is loading.
  */
@@ -249,10 +290,10 @@ function initializeEventListenerForModal() {
     });
 
     observer.observe(document.body, {
-        childList: true
-      , subtree: true
-      , attributes: false
-      , characterData: false
+        childList: true,
+        subtree: true,
+        attributes: false,
+        characterData: false
     });
 }
 
