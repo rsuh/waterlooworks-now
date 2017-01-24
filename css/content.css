@@ -1,8 +1,7 @@
-.infoButton {
-	height: 23px;
-	width: 23px;
-	border: none;
-	outline: none;
+.infoIcon{
+    font-size:18px;
+    position: relative;
+    top: 2px;
 }
 
 #waitingIcon {
@@ -47,7 +46,6 @@
 	font-size : 60%;
     position: relative;
     border: 2px;
-    float: right;
 }
 
 .glassdoor-info a:hover {
