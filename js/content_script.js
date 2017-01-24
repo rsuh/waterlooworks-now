@@ -55,6 +55,7 @@ function getInformationArray(html) {
 
     var jobPostingNode = null;
     var companyInfoNode = null;
+    var applicationInfoNode = null;
 
     $.each(postingDivHtml, function(i, el) {
      	if (jobPostingNode && companyInfoNode) return false;
@@ -63,7 +64,9 @@ function getInformationArray(html) {
      		jobPostingNode = el;
      	} else if (nodeFilter(el, "Company Information")) {
      		companyInfoNode = el;
-     	}
+     	} else if (nodeFilter(el, "Application Information")) {
+            applicationInfoNode = el;
+        }
      });
 
 	//Get the "Job Posting Information" table
@@ -86,6 +89,17 @@ function getInformationArray(html) {
   		}
   	}))[0].innerHTML;
 
+    //Get the "Application Information" table
+    var applicationInfoTableHtml = $(Array.prototype.slice
+        .call($(applicationInfoNode)[0].childNodes)
+        .find(node => {
+        if (node && node.nodeName && node.className &&
+            node.nodeName.toLowerCase() === "div" && node.className === "panel-body") {
+            return node.innerHTML;
+        }
+    }))[0].innerHTML;
+
+
 
   	var infoValueHTMLArray = [];
   	const infoToInclude = ["Job Title",
@@ -97,6 +111,17 @@ function getInformationArray(html) {
 
 	// Assuming table has rows with two columns. First column describes the actual title such as "Location"
 	// and the second column has the value such as "London" in html
+    // TODO; We can probably abstract this code out.
+    $('tr', $(applicationInfoTableHtml)).toArray().forEach(row => {
+        if (row && row.children && row.children[0] && row.children[0].innerHTML &&
+            row.children[0].innerHTML.toLowerCase().includes("application documents required") && row.children[1]) {
+            infoValueHTMLArray.push({
+                "title": "Application Documents Required",
+                "content": row.children[1].innerHTML
+            });
+        }
+    })
+
 
 	$('tr', $(jobPostingTableHtml)).toArray().forEach(row => {
 		for(var i = 0; i < infoToInclude.length; i++) {
@@ -323,18 +348,26 @@ function initializeEventListenerForModal() {
     });
 }
 
-$(document).ready(function() {
-	insertContentCSSLink();
-	insertOverlayDiv();
-	insertInfoButtons();
-    initializeEventListenerForModal();
 
-    $('.container-fluid').on("DOMSubtreeModified", function() {
-	    if(reloadTimeout) {
-	        clearTimeout(reloadTimeout);
-	    }
-	    reloadTimeout = setTimeout(insertInfoButtons, 700);
-	});
+
+$(document).ready(function() {
+
+    // postingsTablePlaceholder is unique to the posting page. We only want to run our
+    // functions if we are in the posting page.
+    if ($("#postingsTablePlaceholder").length) {
+        insertContentCSSLink();
+        insertOverlayDiv();
+        insertInfoButtons();
+        initializeEventListenerForModal();
+
+        $('.container-fluid').on("DOMSubtreeModified", function() {
+            if(reloadTimeout) {
+                clearTimeout(reloadTimeout);
+            }
+            reloadTimeout = setTimeout(insertInfoButtons, 700);
+        });
+    }
+
 });
 
 
