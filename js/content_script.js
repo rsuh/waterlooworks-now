@@ -207,7 +207,8 @@ function showJobInfoModal(url) {
 				companyName: companyName,
 				jobTitle: jobTitle,
 				city: city,
-				tableContent: rowHTML
+				tableContent: rowHTML,
+                jobUrl: url,
 			};
 			getGlassDoorInfo(companyName).then((result) => {
 				let perfectMatch = result.response.employers.find(employer => {
@@ -248,21 +249,14 @@ function showJobInfoModal(url) {
 }
 
 /* This function inserts info buttons into the page along with the action when clicking the button */
-function insertInfoButtons() {
+function insertInfoIcons() {
 	// gaurd to make sure we are not adding buttons more than once
-	if ($('.infoButton')[0]) { return; }
-	let moreInfoImageUrl = chrome.extension.getURL("images/moreInfo.png");
-	let buttonCss = {
-		"background": `url(${moreInfoImageUrl}) no-repeat center center`,
-		"background-size": '20px 20px'
-	};
+	if ($('.infoIcon')[0]) { return; }
 
 	$.each($(".searchResult"), function () {
 		let indexOfJobTitle = $("th:contains('Job Title')").index();
 		var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
-		$(`<button> </button>`)
-		.addClass("infoButton btn-info btn-lg")
-		.css(buttonCss)
+        $(`<i class="infoIcon fa fa-info-circle"></i>`)
 		.attr({"data-toggle": "modal", "data-target": "#jobInfoModal"})
 		.click(function() {
 			showJobInfoModal(link.href);
@@ -272,13 +266,19 @@ function insertInfoButtons() {
 	clearTimeout(reloadTimeout);
 }
 
-/* This function inserts content css link into the page */
-function insertContentCSSLink() {
-	let cssURL = chrome.extension.getURL("css/content.css");
-	let titleTag = $("head").find("title");
+/* This function inserts css links into the page */
+function insertCSSLinks() {
+    let titleTag = $("head").find("title");
+
+    //content.css
 	$('<link> </link>')
-	.attr({"href": cssURL, "rel": "stylesheet"})
+	.attr({"href": chrome.extension.getURL("css/content.css"), "rel": "stylesheet"})
 	.insertAfter(titleTag);
+
+    //font-awesome css
+    $('<link> </link>')
+    .attr({"href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css", "rel": "stylesheet"})
+    .insertAfter(titleTag);
 }
 
 /* This function inserts a blank overlay into the page */
@@ -355,16 +355,16 @@ $(document).ready(function() {
     // postingsTablePlaceholder is unique to the posting page. We only want to run our
     // functions if we are in the posting page.
     if ($("#postingsTablePlaceholder").length) {
-        insertContentCSSLink();
+        insertCSSLinks();
         insertOverlayDiv();
-        insertInfoButtons();
+        insertInfoIcons();
         initializeEventListenerForModal();
 
         $('.container-fluid').on("DOMSubtreeModified", function() {
             if(reloadTimeout) {
                 clearTimeout(reloadTimeout);
             }
-            reloadTimeout = setTimeout(insertInfoButtons, 700);
+            reloadTimeout = setTimeout(insertInfoIcons, 700);
         });
     }
 
