@@ -1,4 +1,5 @@
 var reloadTimeout = null;
+var renderTimeout = null;
 
 /* This function returns the html without opening a new tab for the page
  * accessed the param url. It is assumed that for WaterlooWorks the url will have
@@ -178,7 +179,22 @@ function getGlassDoorInfo(companyName) {
  * @param {String} url - page url for job posting
  */
 function showJobInfoModal(url) {
-	$("#jobInfoModal").html("");
+	clearTimeout(renderTimeout);
+
+	$("#jobInfoModal").html('<div class="sk-circle">\
+        <div class="sk-circle1 sk-child"></div>\
+        <div class="sk-circle2 sk-child"></div>\
+        <div class="sk-circle3 sk-child"></div>\
+        <div class="sk-circle4 sk-child"></div>\
+        <div class="sk-circle5 sk-child"></div>\
+        <div class="sk-circle6 sk-child"></div>\
+        <div class="sk-circle7 sk-child"></div>\
+        <div class="sk-circle8 sk-child"></div>\
+        <div class="sk-circle9 sk-child"></div>\
+        <div class="sk-circle10 sk-child"></div>\
+        <div class="sk-circle11 sk-child"></div>\
+        <div class="sk-circle12 sk-child"></div>\
+      </div>');
 	getJobPostingHTML(url).then((result) => {
 		let templateURL = chrome.extension.getURL("overlay_template.html")
 		$.get(templateURL, function(template) {
@@ -237,18 +253,22 @@ function showJobInfoModal(url) {
 				}
 
 				let rendered = Mustache.render(template, templateDictioary);
-				$("#jobInfoModal").append(rendered);
+				renderTimeout = setTimeout(function () {
+					$("#jobInfoModal").html(rendered);
+
+				}, 600);
 			}, (error) => {
 				let rendered = Mustache.render(template, templateDictioary);
-				$("#jobInfoModal").append(rendered);
+				renderTimeout = setTimeout(function () {
+					$("#jobInfoModal").html(rendered);
+				}, 600);
 			});
-		}).then(() => {
-			$("#waitingIcon").fadeOut("slow");
-        })
+		})
 	});
 }
 
-/* This function inserts info buttons into the page along with the action when clicking the button */
+/* This function inserts info buttons into the page along with the action when
+clicking the button */
 function insertInfoIcons() {
 	// gaurd to make sure we are not adding buttons more than once
 	if ($('.infoIcon')[0]) { return; }
@@ -270,6 +290,10 @@ function insertInfoIcons() {
 function insertCSSLinks() {
     let titleTag = $("head").find("title");
 
+	$('<link> </link>')
+	.attr({"href": chrome.extension.getURL("css/spinkit.css"), "rel": "stylesheet"})
+	.insertAfter(titleTag);
+
     //content.css
 	$('<link> </link>')
 	.attr({"href": chrome.extension.getURL("css/content.css"), "rel": "stylesheet"})
@@ -283,89 +307,31 @@ function insertCSSLinks() {
 
 /* This function inserts a blank overlay into the page */
 function insertOverlayDiv() {
-    //loading icon thing for job info modal
-    $("body").prepend("<div id='waitingIcon' style='display: none;'></div>");
-
 	$(`<div></div>`)
-	.addClass("modal")
+	.addClass("modal fade")
 	.attr({"id": "jobInfoModal", "role": "dialog"})
 	.appendTo($("body"));
-
 }
 
-/* This function inserts a callback to the onclick handler for page changing.
- * As a hacky solution, currently the callback refreshes the entire page to
- * re-add buttons.
- */
-function insertCallBackToReAddButtonsOnPagination() {
-	// Call this function if we decide to reload everytime we refresh table
-	$("<script> function reloadPage() { location.reload() } </script>").appendTo("head");
-
-    var passTheCallBack = function(a) {
-        var oldFunction = $(a).attr('onclick');
-        if (typeof oldFunction === "string") {
-            var newFunction = oldFunction.replace("null", "reloadPage");
-            $(a).attr("onclick", newFunction);
+/* This function adds a listener to DOMSubtreeModified so when user reloads \
+ * table by changing page or shortlisting, we re add info icons */
+ function addReloadListener() {
+ 	 $('.container-fluid').on("DOMSubtreeModified", function() {
+        if(reloadTimeout) {
+            clearTimeout(reloadTimeout);
         }
-    };
-
-	$(".pagination a").toArray().forEach(a => {
-        passTheCallBack(a);
-	});
-
-    $("#postingsTable thead a").toArray().forEach(a => {
-        passTheCallBack(a);
+        reloadTimeout = setTimeout(insertInfoIcons, 700);
     });
-
-}
-
-/* This function is used to show insert an event listener. The purpose is to show
- * the loading spinner whent he modal dialog for job info is loading.
- */
-function initializeEventListenerForModal() {
-    // we want to wait for the gray scrollable area to appear to show the
-    // waiting spinning icon.
-    var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (!mutation.addedNodes) return
-
-            for (var i = 0; i < mutation.addedNodes.length; i++) {
-              // do things to your newly added nodes here
-              var node = mutation.addedNodes[i]
-
-              if (node.className === "modal-scrollable") {
-                $("#waitingIcon").css('display', 'block');
-              }
-            }
-        })
-    });
-
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: false,
-        characterData: false
-    });
-}
-
-
+ }
 
 $(document).ready(function() {
-
     // postingsTablePlaceholder is unique to the posting page. We only want to run our
     // functions if we are in the posting page.
     if ($("#postingsTablePlaceholder").length) {
         insertCSSLinks();
         insertOverlayDiv();
         insertInfoIcons();
-        initializeEventListenerForModal();
-
-        $('.container-fluid').on("DOMSubtreeModified", function() {
-            if(reloadTimeout) {
-                clearTimeout(reloadTimeout);
-            }
-            reloadTimeout = setTimeout(insertInfoIcons, 700);
-        });
+        addReloadListener();
     }
 
 });

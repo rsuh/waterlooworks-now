@@ -10,7 +10,7 @@
 					{{#squareLogo}}
 					<img class="company-logo img-responsive img-thumbnail" src='{{squareLogo}}' title='{{companyName}}'/>
 					{{/squareLogo}}
-					{{companyName}}
+					{{{companyName}}}
 					{{#companyWebsite}}
 					</a>
 					{{/companyWebsite}}
@@ -20,7 +20,7 @@
 			<div class="row">
 				<div class="col-xs-10">
 					<h2>
-						<a href={{jobUrl}} target="_self" id="modal-job-title">{{jobTitle}}</a>
+						<a href={{jobUrl}} target="_self" id="modal-job-title">{{{jobTitle}}}</a>
 						{{#city}}
 							<span id="modal-city">-{{city}}</span>
 						{{/city}}
@@ -62,11 +62,3 @@
 		</div>
 	</div>
 </div>
-
-
-<!-- - Job Title
-- Job City
-- Special Job Requirements
-- Required Skills
-- Job Responsibilities (maybe)
-- Compensation and Benefits Information -->
