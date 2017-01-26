@@ -10,7 +10,7 @@
 					{{#squareLogo}}
 					<img class="company-logo img-responsive img-thumbnail" src='{{squareLogo}}' title='{{companyName}}'/>
 					{{/squareLogo}}
-					{{companyName}}
+					{{{companyName}}}
 					{{#companyWebsite}}
 					</a>
 					{{/companyWebsite}}
@@ -20,7 +20,7 @@
 			<div class="row">
 				<div class="col-xs-10">
 					<h2>
-						<span id="modal-job-title">{{jobTitle}}</span>
+						<a href={{jobUrl}} target="_self" id="modal-job-title">{{{jobTitle}}}</a>
 						{{#city}}
 							<span id="modal-city">-{{city}}</span>
 						{{/city}}
@@ -29,18 +29,14 @@
 				</div>
 				<div class="col-xs-2 glassdoor-info">
 				{{#glassDoorLink}}
-					<h2><a href='{{glassDoorLink}}' target="_blank">Company
+					<h2><a href='{{glassDoorLink}}' target="_blank">
 						{{#glassDoorRating}}
-							Rating
+							Company Rating: {{glassDoorRating}}/5.0
 						{{/glassDoorRating}}
 						{{^glassDoorRating}}
-							Info
+							Search it!
 						{{/glassDoorRating}}
 						</a>
-
-						{{#glassDoorRating}}
-						: {{glassDoorRating}}/5.0
-						{{/glassDoorRating}}
 
 						<span class="glassdoor-logo">
 							<a href='https://www.glassdoor.ca/index.htm'
@@ -66,11 +62,3 @@
 		</div>
 	</div>
 </div>
-
-
-<!-- - Job Title
-- Job City
-- Special Job Requirements
-- Required Skills
-- Job Responsibilities (maybe)
-- Compensation and Benefits Information -->

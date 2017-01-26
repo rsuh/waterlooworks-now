@@ -1,19 +1,8 @@
-.infoButton {
-	height: 23px;
-	width: 23px;
-	border: none;
-	outline: none;
-}
-
-#waitingIcon {
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    background: url(../images/loadingIcon.gif) center no-repeat rgb(51, 51, 51);
-    opacity: 0.5;
+.infoIcon{
+    font-size:18px;
+    position: relative;
+    top: 2px;
+    cursor: pointer;
 }
 
 .job-info-container {
@@ -22,6 +11,7 @@
 
 #jobInfoModal {
     top: 0% !important;
+    margin-top: 0px !important;
 }
 
 #modal-city {
@@ -47,7 +37,6 @@
 	font-size : 60%;
     position: relative;
     border: 2px;
-    float: right;
 }
 
 .glassdoor-info a:hover {

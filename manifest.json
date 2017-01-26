@@ -3,7 +3,7 @@
 
   "name": "Make WaterlooWorks Great Again",
   "description": "This extension improves WaterlooWorks",
-  "version": "1.1",
+  "version": "1.1.1",
 
   "author": "Gurpreet Gill and Peyman Gardideh",
 
@@ -30,6 +30,7 @@
   "web_accessible_resources": [
     "images/*",
     "css/content.css",
+    "css/spinkit.css",
     "js/mustache.min.js",
     "overlay_template.html"
   ]
