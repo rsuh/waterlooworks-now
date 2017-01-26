@@ -313,32 +313,6 @@ function insertOverlayDiv() {
 	.appendTo($("body"));
 }
 
-/* This function inserts a callback to the onclick handler for page changing.
- * As a hacky solution, currently the callback refreshes the entire page to
- * re-add buttons.
- */
-function insertCallBackToReAddButtonsOnPagination() {
-	// Call this function if we decide to reload everytime we refresh table
-	$("<script> function reloadPage() { location.reload() } </script>")
-	.appendTo("head");
-
-    var passTheCallBack = function(a) {
-        var oldFunction = $(a).attr('onclick');
-        if (typeof oldFunction === "string") {
-            var newFunction = oldFunction.replace("null", "reloadPage");
-            $(a).attr("onclick", newFunction);
-        }
-    };
-
-	$(".pagination a").toArray().forEach(a => {
-        passTheCallBack(a);
-	});
-
-    $("#postingsTable thead a").toArray().forEach(a => {
-        passTheCallBack(a);
-    });
-}
-
 $(document).ready(function() {
     // postingsTablePlaceholder is unique to the posting page. We only want to run our
     // functions if we are in the posting page.
