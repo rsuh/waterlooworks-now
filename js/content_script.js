@@ -1,4 +1,5 @@
 var reloadTimeout = null;
+var renderTimeout = null;
 
 /* This function returns the html without opening a new tab for the page
  * accessed the param url. It is assumed that for WaterlooWorks the url will have
@@ -178,7 +179,22 @@ function getGlassDoorInfo(companyName) {
  * @param {String} url - page url for job posting
  */
 function showJobInfoModal(url) {
-	$("#jobInfoModal").html("");
+	clearTimeout(renderTimeout);
+
+	$("#jobInfoModal").html('<div class="sk-circle">\
+        <div class="sk-circle1 sk-child"></div>\
+        <div class="sk-circle2 sk-child"></div>\
+        <div class="sk-circle3 sk-child"></div>\
+        <div class="sk-circle4 sk-child"></div>\
+        <div class="sk-circle5 sk-child"></div>\
+        <div class="sk-circle6 sk-child"></div>\
+        <div class="sk-circle7 sk-child"></div>\
+        <div class="sk-circle8 sk-child"></div>\
+        <div class="sk-circle9 sk-child"></div>\
+        <div class="sk-circle10 sk-child"></div>\
+        <div class="sk-circle11 sk-child"></div>\
+        <div class="sk-circle12 sk-child"></div>\
+      </div>');
 	getJobPostingHTML(url).then((result) => {
 		let templateURL = chrome.extension.getURL("overlay_template.html")
 		$.get(templateURL, function(template) {
@@ -237,14 +253,17 @@ function showJobInfoModal(url) {
 				}
 
 				let rendered = Mustache.render(template, templateDictioary);
-				$("#jobInfoModal").append(rendered);
+				renderTimeout = setTimeout(function () {
+					$("#jobInfoModal").html(rendered);
+
+				}, 600);
 			}, (error) => {
 				let rendered = Mustache.render(template, templateDictioary);
-				$("#jobInfoModal").append(rendered);
+				renderTimeout = setTimeout(function () {
+					$("#jobInfoModal").html(rendered);
+				}, 600);
 			});
-		}).then(() => {
-			$("#waitingIcon").fadeOut("slow");
-        })
+		})
 	});
 }
 
@@ -270,6 +289,10 @@ function insertInfoIcons() {
 function insertCSSLinks() {
     let titleTag = $("head").find("title");
 
+	$('<link> </link>')
+	.attr({"href": chrome.extension.getURL("css/spinkit.css"), "rel": "stylesheet"})
+	.insertAfter(titleTag);
+
     //content.css
 	$('<link> </link>')
 	.attr({"href": chrome.extension.getURL("css/content.css"), "rel": "stylesheet"})
@@ -283,11 +306,8 @@ function insertCSSLinks() {
 
 /* This function inserts a blank overlay into the page */
 function insertOverlayDiv() {
-    //loading icon thing for job info modal
-    $("body").prepend("<div id='waitingIcon' style='display: none;'></div>");
-
 	$(`<div></div>`)
-	.addClass("modal")
+	.addClass("modal fade")
 	.attr({"id": "jobInfoModal", "role": "dialog"})
 	.appendTo($("body"));
 
@@ -358,7 +378,6 @@ $(document).ready(function() {
         insertCSSLinks();
         insertOverlayDiv();
         insertInfoIcons();
-        initializeEventListenerForModal();
 
         $('.container-fluid').on("DOMSubtreeModified", function() {
             if(reloadTimeout) {
