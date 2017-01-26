@@ -313,6 +313,17 @@ function insertOverlayDiv() {
 	.appendTo($("body"));
 }
 
+/* This function adds a listener to DOMSubtreeModified so when user reloads \
+ * table by changing page or shortlisting, we re add info icons */
+ function addReloadListener() {
+ 	 $('.container-fluid').on("DOMSubtreeModified", function() {
+        if(reloadTimeout) {
+            clearTimeout(reloadTimeout);
+        }
+        reloadTimeout = setTimeout(insertInfoIcons, 700);
+    });
+ }
+
 $(document).ready(function() {
     // postingsTablePlaceholder is unique to the posting page. We only want to run our
     // functions if we are in the posting page.
@@ -320,13 +331,7 @@ $(document).ready(function() {
         insertCSSLinks();
         insertOverlayDiv();
         insertInfoIcons();
-
-        $('.container-fluid').on("DOMSubtreeModified", function() {
-            if(reloadTimeout) {
-                clearTimeout(reloadTimeout);
-            }
-            reloadTimeout = setTimeout(insertInfoIcons, 700);
-        });
+        addReloadListener();
     }
 
 });
