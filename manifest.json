@@ -20,9 +20,6 @@
   "content_scripts": [
     {
       "matches": ["https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"],
-      "css":[
-        "css/spinkit.css"
-      ],
       "js": [
         "js/jquery.min.js",
         "js/mustache.min.js",
