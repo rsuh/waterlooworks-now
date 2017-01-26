@@ -13,7 +13,6 @@
     "default_title": "MWGA"
   },
   "permissions": [
-    "tabs",
     "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
     "https://api.glassdoor.com/api/api.htm"
   ],
