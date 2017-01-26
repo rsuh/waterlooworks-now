@@ -267,7 +267,8 @@ function showJobInfoModal(url) {
 	});
 }
 
-/* This function inserts info buttons into the page along with the action when clicking the button */
+/* This function inserts info buttons into the page along with the action when
+clicking the button */
 function insertInfoIcons() {
 	// gaurd to make sure we are not adding buttons more than once
 	if ($('.infoIcon')[0]) { return; }
@@ -310,7 +311,6 @@ function insertOverlayDiv() {
 	.addClass("modal fade")
 	.attr({"id": "jobInfoModal", "role": "dialog"})
 	.appendTo($("body"));
-
 }
 
 /* This function inserts a callback to the onclick handler for page changing.
@@ -319,7 +319,8 @@ function insertOverlayDiv() {
  */
 function insertCallBackToReAddButtonsOnPagination() {
 	// Call this function if we decide to reload everytime we refresh table
-	$("<script> function reloadPage() { location.reload() } </script>").appendTo("head");
+	$("<script> function reloadPage() { location.reload() } </script>")
+	.appendTo("head");
 
     var passTheCallBack = function(a) {
         var oldFunction = $(a).attr('onclick');
@@ -336,42 +337,9 @@ function insertCallBackToReAddButtonsOnPagination() {
     $("#postingsTable thead a").toArray().forEach(a => {
         passTheCallBack(a);
     });
-
 }
-
-/* This function is used to show insert an event listener. The purpose is to show
- * the loading spinner whent he modal dialog for job info is loading.
- */
-function initializeEventListenerForModal() {
-    // we want to wait for the gray scrollable area to appear to show the
-    // waiting spinning icon.
-    var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (!mutation.addedNodes) return
-
-            for (var i = 0; i < mutation.addedNodes.length; i++) {
-              // do things to your newly added nodes here
-              var node = mutation.addedNodes[i]
-
-              if (node.className === "modal-scrollable") {
-                $("#waitingIcon").css('display', 'block');
-              }
-            }
-        })
-    });
-
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: false,
-        characterData: false
-    });
-}
-
-
 
 $(document).ready(function() {
-
     // postingsTablePlaceholder is unique to the posting page. We only want to run our
     // functions if we are in the posting page.
     if ($("#postingsTablePlaceholder").length) {
