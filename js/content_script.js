@@ -338,7 +338,6 @@ function addInterviewsClickHandler() {
 
 	$('thead td:eq(0)').remove();
 	$.each($('tbody tr'), function () {
-		console.log("4")
 		$(this).attr("onclick", $(this).find('td:eq(0) a:eq(0)').attr("onclick"));
 		$(this).find("td:eq(0)").remove();
 	});
@@ -346,7 +345,6 @@ function addInterviewsClickHandler() {
 }
 
 function changePointerOnApplicationRows() {
-	console.log("hello");
 	$('tbody tr td').css("cursor", "default");
 }
 
