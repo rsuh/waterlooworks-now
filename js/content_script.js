@@ -305,8 +305,8 @@ function insertCSSLinks() {
     .insertAfter(titleTag);
 }
 
-/* This function inserts a blank overlay into the page */
-function insertOverlayDiv() {
+/* This function inserts a blank modal into the page */
+function insertModalDiv() {
 	$(`<div></div>`)
 	.addClass("modal fade")
 	.attr({"id": "jobInfoModal", "role": "dialog"})
@@ -314,26 +314,47 @@ function insertOverlayDiv() {
 }
 
 /* This function adds a listener to DOMSubtreeModified so when user reloads \
- * table by changing page or shortlisting, we re add info icons */
- function addReloadListener() {
- 	 $('.container-fluid').on("DOMSubtreeModified", function() {
+ * table by changing page, shortlisting or re-sorting, we re-add our ui
+ * @param {String} element - element string of container to watch
+ * @param {String} reloadFunction - function to be called when subtree is modified
+ */
+ function addReloadListener(element, reloadFunction) {
+ 	 $(element).on("DOMSubtreeModified", function() {
         if(reloadTimeout) {
             clearTimeout(reloadTimeout);
         }
-        reloadTimeout = setTimeout(insertInfoIcons, 700);
+        reloadTimeout = setTimeout(reloadFunction, 700);
     });
  }
 
+
+/* This function removes the "view" button from interviews page and 
+ * makes the whole row clickable.
+ */
+function addInterviewsClickHandler() {
+	if ($('tbody tr:eq(0) td:eq(0) a:eq(0)').length == 0) {
+		return;
+	}
+
+	$('thead td:eq(0)').remove();
+	$.each($('tbody tr'), function (index, row) {
+		console.log("4")
+		$(this).attr("onclick", $(this).find('td:eq(0) a:eq(0)').attr("onclick"));
+		$(this).find("td:eq(0)").remove();
+	});
+	clearTimeout(reloadTimeout);
+}
+
+
 $(document).ready(function() {
-    // postingsTablePlaceholder is unique to the posting page. We only want to run our
-    // functions if we are in the posting page.
-    if ($("#postingsTablePlaceholder").length) {
+    if ($("#postingsTablePlaceholder").length) { // postings
         insertCSSLinks();
         insertOverlayDiv();
         insertInfoIcons();
-        addReloadListener();
+        addReloadListener('.container-fluid', insertInfoIcons);
+    } else if($('#ccrm_studentInterviews').length) { // interviews
+    	addInterviewsClickHandler();
+    	addReloadListener('#ccrm_studentInterviews', addInterviewsClickHandler);
+    } else {
     }
-
 });
-
-
