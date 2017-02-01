@@ -337,12 +337,17 @@ function addInterviewsClickHandler() {
 	}
 
 	$('thead td:eq(0)').remove();
-	$.each($('tbody tr'), function (index, row) {
+	$.each($('tbody tr'), function () {
 		console.log("4")
 		$(this).attr("onclick", $(this).find('td:eq(0) a:eq(0)').attr("onclick"));
 		$(this).find("td:eq(0)").remove();
 	});
 	clearTimeout(reloadTimeout);
+}
+
+function changePointerOnApplicationRows() {
+	console.log("hello");
+	$('tbody tr td').css("cursor", "default");
 }
 
 
@@ -352,6 +357,9 @@ $(document).ready(function() {
         insertOverlayDiv();
         insertInfoIcons();
         addReloadListener('.container-fluid', insertInfoIcons);
+    } else if($('#na_studentApplicationGrid').length) { // applications
+    	changePointerOnApplicationRows();
+    	addReloadListener('#na_studentApplicationGrid', changePointerOnApplicationRows);
     } else if($('#ccrm_studentInterviews').length) { // interviews
     	addInterviewsClickHandler();
     	addReloadListener('#ccrm_studentInterviews', addInterviewsClickHandler);
