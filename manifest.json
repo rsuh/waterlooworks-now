@@ -13,12 +13,16 @@
     "default_title": "MWGA"
   },
   "permissions": [
-    "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
+    "https://waterlooworks.uwaterloo.ca/myAccount/**",
     "https://api.glassdoor.com/api/api.htm"
   ],
   "content_scripts": [
     {
-      "matches": ["https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"],
+      "matches": [
+        "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
+        "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coopApplications.htm",
+        "https://waterlooworks.uwaterloo.ca/myAccount/co-op/interviews-co-op.htm"
+      ],
       "js": [
         "js/jquery.min.js",
         "js/mustache.min.js",
