@@ -352,7 +352,7 @@ function changePointerOnApplicationRows() {
 $(document).ready(function() {
     if ($("#postingsTablePlaceholder").length) { // postings
         insertCSSLinks();
-        insertOverlayDiv();
+        insertModalDiv();
         insertInfoIcons();
         addReloadListener('.container-fluid', insertInfoIcons);
     } else if($('#na_studentApplicationGrid').length) { // applications
@@ -360,7 +360,7 @@ $(document).ready(function() {
     	addReloadListener('#na_studentApplicationGrid', changePointerOnApplicationRows);
     } else if($('#ccrm_studentInterviews').length) { // interviews
     	addInterviewsClickHandler();
-    	addReloadListener('#ccrm_studentInterviews', addInterviewsClickHandler);
+    	addReloadListener('#ccrm_studentInterviews', addInterviewsClickHandle644r);
     } else {
     }
 });
