@@ -359,10 +359,15 @@ function addInterviewsClickHandler() {
 	clearTimeout(reloadTimeout);
 }
 
+// Changed cursor in applications table from pointer to default since rows are not clickable
 function changePointerOnApplicationRows() {
 	$('tbody tr td').css("cursor", "default");
 }
 
+/* Formats time for add to calendar api
+ * @param {String} time - time in format hh:MM[AM|PM]
+ * @return {String} - time in format HH:MM:SS
+*/
 function getFormattedTime(time) {
 	var pmTimeOffset = 0;
 	if (time.includes("PM")) {
@@ -373,6 +378,10 @@ function getFormattedTime(time) {
 	return (parseInt(minAndHour[0]) + pmTimeOffset) + ":" + minAndHour[1] + ":00";
 }
 
+/* Inserts 'Add to Calendar' buttons in interview details page. must be in
+ * interview details when called, scrapes html for interview details and
+ * inserts a button to create a calendar event
+ */
 function insertAddToCalendarButton() {
   	let dateAndTime = $("tbody tr:contains('When') td:eq(1)")[0].innerText.split("from");
   	let date = new Date(dateAndTime[0]);
@@ -420,7 +429,7 @@ $(document).ready(function() {
     	// TODO: Add to calendar from dashboard
     	// let clickHandler = $(".panel-default:contains('Interview Schedule') tbody tr:eq(0)").attr("onclick");
     	// str.split('{')[1].split('}')[0].split(',')
-    } else if ($(".boxContent:contains('INTERVIEW DETAILS')").length) {
+    } else if ($(".boxContent:contains('INTERVIEW DETAILS')").length) { // interview details
     	importAddToCalender();
     	insertAddToCalendarButton();
     }
