@@ -294,46 +294,143 @@ function insertCSSLinks() {
 	.attr({"href": chrome.extension.getURL("css/spinkit.css"), "rel": "stylesheet"})
 	.insertAfter(titleTag);
 
-    //content.css
+    // content.css
 	$('<link> </link>')
 	.attr({"href": chrome.extension.getURL("css/content.css"), "rel": "stylesheet"})
 	.insertAfter(titleTag);
 
-    //font-awesome css
+    // font-awesome css
     $('<link> </link>')
     .attr({"href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css", "rel": "stylesheet"})
     .insertAfter(titleTag);
 }
 
-/* This function inserts a blank overlay into the page */
-function insertOverlayDiv() {
-	$(`<div></div>`)
+function importAddToCalender() {
+    $('<link> </link>')
+    .attr({"href": "https://addtocalendar.com/atc/1.5/atc-style-blue.css", "rel": "stylesheet"})
+    .appendTo($("head"));
+
+    $(`<script type="text/javascript">(function () {
+            if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
+            if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
+                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+                s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
+                s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
+                var h = d[g]('body')[0];h.appendChild(s); }})();
+    </script>`).appendTo($("head"));
+}
+
+/* This function inserts a blank modal into the page */
+function insertModalDiv() {
+	$("<div></div>")
 	.addClass("modal fade")
 	.attr({"id": "jobInfoModal", "role": "dialog"})
 	.appendTo($("body"));
 }
 
 /* This function adds a listener to DOMSubtreeModified so when user reloads \
- * table by changing page or shortlisting, we re add info icons */
- function addReloadListener() {
- 	 $('.container-fluid').on("DOMSubtreeModified", function() {
+ * table by changing page, shortlisting or re-sorting, we re-add our ui
+ * @param {String} element - element string of container to watch
+ * @param {String} reloadFunction - function to be called when subtree is modified
+ */
+ function addReloadListener(element, reloadFunction) {
+ 	 $(element).on("DOMSubtreeModified", function() {
         if(reloadTimeout) {
             clearTimeout(reloadTimeout);
         }
-        reloadTimeout = setTimeout(insertInfoIcons, 700);
+        reloadTimeout = setTimeout(reloadFunction, 700);
     });
  }
 
+
+/* This function removes the "view" button from interviews page and 
+ * makes the whole row clickable.
+ */
+function addInterviewsClickHandler() {
+	if ($('tbody tr:eq(0) td:eq(0) a:eq(0)').length == 0) {
+		return;
+	}
+
+	$('thead td:eq(0)').remove();
+	$.each($('tbody tr'), function () {
+		$(this).attr("onclick", $(this).find('td:eq(0) a:eq(0)').attr("onclick"));
+		$(this).find("td:eq(0)").remove();
+	});
+	clearTimeout(reloadTimeout);
+}
+
+// Changed cursor in applications table from pointer to default since rows are not clickable
+function changePointerOnApplicationRows() {
+	$('tbody tr td').css("cursor", "default");
+}
+
+/* Formats time for add to calendar api
+ * @param {String} time - time in format hh:MM[AM|PM]
+ * @return {String} - time in format HH:MM:SS
+*/
+function getFormattedTime(time) {
+	var pmTimeOffset = 0;
+	if (time.includes("PM")) {
+		pmTimeOffset = 12;
+	}
+	time = time.substring(0, time.length - 2);
+	let minAndHour = time.split(":");
+	return (parseInt(minAndHour[0]) + pmTimeOffset) + ":" + minAndHour[1] + ":00";
+}
+
+/* Inserts 'Add to Calendar' buttons in interview details page. must be in
+ * interview details when called, scrapes html for interview details and
+ * inserts a button to create a calendar event
+ */
+function insertAddToCalendarButton() {
+  	let dateAndTime = $("tbody tr:contains('When') td:eq(1)")[0].innerText.split("from");
+  	let date = new Date(dateAndTime[0]);
+  	let formattedDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+
+  	let fromAndToTime = dateAndTime[1].split("to");
+  	let fromTime = fromAndToTime[0].replace(/\s/g, "");
+  	let toTime = fromAndToTime[1].replace(/\s/g, "");
+  	let interviewDescription = $("tr:contains('Interviewing') td:eq(1)")[0].innerText.split("\n");
+
+  	let eventStart = formattedDate + " " + getFormattedTime(fromTime);
+  	let eventEnd = formattedDate + " " + getFormattedTime(toTime);
+  	let timeZone = "America/New_York";
+  	let title = "Interview with " + interviewDescription[2];
+  	let description = "WaterlooWorks interview with " + interviewDescription[2] + " for job position " + interviewDescription[1] + "\n Powered by MWGA -- Please remember to always double check WaterlooWorks for any last minute changes or other inaccurate information";
+  	let location = $("tr:contains('Where') td:eq(1)")[0].innerText;
+  	let privacy = "private";
+
+  	$(`<span class="addtocalendar atc-style-blue">
+        <var class="atc_event">
+            <var class="atc_date_start">${eventStart}</var>
+            <var class="atc_date_end">${eventEnd}</var>
+            <var class="atc_timezone">${timeZone}</var>
+            <var class="atc_title">${title}</var>
+            <var class="atc_description">${description}</var>
+            <var class="atc_location">${location}</var>
+            <var class="atc_privacy">${privacy}</var>
+        </var>
+    </span>`).insertAfter($(".container-fluid .box"));
+}
+
 $(document).ready(function() {
-    // postingsTablePlaceholder is unique to the posting page. We only want to run our
-    // functions if we are in the posting page.
-    if ($("#postingsTablePlaceholder").length) {
+    if ($("#postingsTablePlaceholder").length) { // postings
         insertCSSLinks();
-        insertOverlayDiv();
+        insertModalDiv();
         insertInfoIcons();
-        addReloadListener();
+        addReloadListener('.container-fluid', insertInfoIcons);
+    } else if($('#na_studentApplicationGrid').length) { // applications
+    	changePointerOnApplicationRows();
+    	addReloadListener('#na_studentApplicationGrid', changePointerOnApplicationRows);
+    } else if($('#ccrm_studentInterviews').length) { // interviews
+    	addInterviewsClickHandler();
+    	addReloadListener('#ccrm_studentInterviews', addInterviewsClickHandle644r);
+    } else if ($(".panel-default:contains('Interview Schedule')").length) { // Dashboard interviews
+    	// TODO: Add to calendar from dashboard
+    	// let clickHandler = $(".panel-default:contains('Interview Schedule') tbody tr:eq(0)").attr("onclick");
+    	// str.split('{')[1].split('}')[0].split(',')
+    } else if ($(".boxContent:contains('INTERVIEW DETAILS')").length) { // interview details
+    	importAddToCalender();
+    	insertAddToCalendarButton();
     }
-
 });
-
-
