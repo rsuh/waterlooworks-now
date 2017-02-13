@@ -294,20 +294,35 @@ function insertCSSLinks() {
 	.attr({"href": chrome.extension.getURL("css/spinkit.css"), "rel": "stylesheet"})
 	.insertAfter(titleTag);
 
-    //content.css
+    // content.css
 	$('<link> </link>')
 	.attr({"href": chrome.extension.getURL("css/content.css"), "rel": "stylesheet"})
 	.insertAfter(titleTag);
 
-    //font-awesome css
+    // font-awesome css
     $('<link> </link>')
     .attr({"href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css", "rel": "stylesheet"})
     .insertAfter(titleTag);
 }
 
+function importAddToCalender() {
+    $('<link> </link>')
+    .attr({"href": "https://addtocalendar.com/atc/1.5/atc-style-blue.css", "rel": "stylesheet"})
+    .appendTo($("head"));
+
+    $(`<script type="text/javascript">(function () {
+            if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
+            if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
+                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+                s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
+                s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
+                var h = d[g]('body')[0];h.appendChild(s); }})();
+    </script>`).appendTo($("head"));
+}
+
 /* This function inserts a blank modal into the page */
 function insertModalDiv() {
-	$(`<div></div>`)
+	$("<div></div>")
 	.addClass("modal fade")
 	.attr({"id": "jobInfoModal", "role": "dialog"})
 	.appendTo($("body"));
@@ -344,10 +359,59 @@ function addInterviewsClickHandler() {
 	clearTimeout(reloadTimeout);
 }
 
+// Changed cursor in applications table from pointer to default since rows are not clickable
 function changePointerOnApplicationRows() {
 	$('tbody tr td').css("cursor", "default");
 }
 
+/* Formats time for add to calendar api
+ * @param {String} time - time in format hh:MM[AM|PM]
+ * @return {String} - time in format HH:MM:SS
+*/
+function getFormattedTime(time) {
+	var pmTimeOffset = 0;
+	if (time.includes("PM")) {
+		pmTimeOffset = 12;
+	}
+	time = time.substring(0, time.length - 2);
+	let minAndHour = time.split(":");
+	return (parseInt(minAndHour[0]) + pmTimeOffset) + ":" + minAndHour[1] + ":00";
+}
+
+/* Inserts 'Add to Calendar' buttons in interview details page. must be in
+ * interview details when called, scrapes html for interview details and
+ * inserts a button to create a calendar event
+ */
+function insertAddToCalendarButton() {
+  	let dateAndTime = $("tbody tr:contains('When') td:eq(1)")[0].innerText.split("from");
+  	let date = new Date(dateAndTime[0]);
+  	let formattedDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+
+  	let fromAndToTime = dateAndTime[1].split("to");
+  	let fromTime = fromAndToTime[0].replace(/\s/g, "");
+  	let toTime = fromAndToTime[1].replace(/\s/g, "");
+  	let interviewDescription = $("tr:contains('Interviewing') td:eq(1)")[0].innerText.split("\n");
+
+  	let eventStart = formattedDate + " " + getFormattedTime(fromTime);
+  	let eventEnd = formattedDate + " " + getFormattedTime(toTime);
+  	let timeZone = "America/New_York";
+  	let title = "Interview with " + interviewDescription[2];
+  	let description = "WaterlooWorks interview with " + interviewDescription[2] + " for job position " + interviewDescription[1] + "\n Powered by MWGA -- Please remember to always double check WaterlooWorks for any last minute changes or other inaccurate information";
+  	let location = $("tr:contains('Where') td:eq(1)")[0].innerText;
+  	let privacy = "private";
+
+  	$(`<span class="addtocalendar atc-style-blue">
+        <var class="atc_event">
+            <var class="atc_date_start">${eventStart}</var>
+            <var class="atc_date_end">${eventEnd}</var>
+            <var class="atc_timezone">${timeZone}</var>
+            <var class="atc_title">${title}</var>
+            <var class="atc_description">${description}</var>
+            <var class="atc_location">${location}</var>
+            <var class="atc_privacy">${privacy}</var>
+        </var>
+    </span>`).insertAfter($(".container-fluid .box"));
+}
 
 $(document).ready(function() {
     if ($("#postingsTablePlaceholder").length) { // postings
@@ -361,6 +425,12 @@ $(document).ready(function() {
     } else if($('#ccrm_studentInterviews').length) { // interviews
     	addInterviewsClickHandler();
     	addReloadListener('#ccrm_studentInterviews', addInterviewsClickHandle644r);
-    } else {
+    } else if ($(".panel-default:contains('Interview Schedule')").length) { // Dashboard interviews
+    	// TODO: Add to calendar from dashboard
+    	// let clickHandler = $(".panel-default:contains('Interview Schedule') tbody tr:eq(0)").attr("onclick");
+    	// str.split('{')[1].split('}')[0].split(',')
+    } else if ($(".boxContent:contains('INTERVIEW DETAILS')").length) { // interview details
+    	importAddToCalender();
+    	insertAddToCalendarButton();
     }
 });
