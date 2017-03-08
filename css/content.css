@@ -52,3 +52,27 @@
     overflow-y: scroll !important;
 }
 
+#clear-shortlist-button {
+    /*background: rgb(66,129,244);
+    padding: 5px 15px;
+    vertical-align: middle;
+    border-radius: 2px;
+    width: 170px;
+    border: 1px solid rgb(186,186,186);
+*/
+    margin-bottom: 10px;
+    padding: 7px 35px;
+    color: #fff;
+    font-family: "Verdana";
+    font-size: 14px;
+    text-decoration: none;
+    outline: none;
+    line-height: 20px;
+    vertical-align: middle;
+    background: #005baa;
+    background-position: right bottom; /*Positioning*/
+    background-repeat: no-repeat;
+    box-shadow: 0 0 40px rgba(0, 0, 0, .13) inset;
+    border-radius: 4px;
+    zoom: 1;
+}

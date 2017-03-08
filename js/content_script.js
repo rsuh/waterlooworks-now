@@ -272,7 +272,6 @@ clicking the button */
 function insertInfoIcons() {
 	// gaurd to make sure we are not adding buttons more than once
 	if ($('.infoIcon')[0]) { return; }
-
 	$.each($(".searchResult"), function () {
 		let indexOfJobTitle = $("th:contains('Job Title')").index();
 		var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
@@ -413,7 +412,6 @@ function insertAddToCalendarButton() {
     </span>`).insertAfter($(".container-fluid .box"));
 }
 
-
 function removeFromShortlistCall(jobIds) {
     if (jobIds.length == 0) {
         return;
@@ -429,19 +427,18 @@ function removeFromShortlistCall(jobIds) {
             rand : Math.floor(Math.random()*100000)
         };
 
-        $.post(controllerPath, request, function(data, status, xhr){
+        $.post(requestUrl, request, function(data, status, xhr){
             if (data && data.added) {
                 // if for some reason, the job was added to shortlist, lets make a second
                 // api call. This will ensure that job gets removed from the shortlist.
                 // Ideally, it should have removed the first time but because its ww,
                 // lets check atleast once.
-                $.post(controllerPath, request, function(data, status, xhr) {}, "json");
+                $.post(requestUrl, request, function(data, status, xhr) {}, "json");
             }
         }, "json");
     }
 
 }
-
 
 function clearShortlist() {
     var jobids = [];
@@ -463,12 +460,25 @@ function clearShortlist() {
     removeFromShortlistCall(jobids);
 }
 
+function insertClearShortlistButton() {
+	var imgURL = "url(" + chrome.extension.getURL("images/goose.png") + ")";
+	$("<button \
+		id='clear-shortlist-button' \
+		type='button'>Clear Shortlist \
+	</button>")
+	.css('background-image', imgURL)
+	.click(clearShortlist)
+	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
+}
 
 $(document).ready(function() {
     if ($("#postingsTablePlaceholder").length) { // postings
         insertCSSLinks();
         insertModalDiv();
         insertInfoIcons();
+        if ($(".orbisModuleHeader:contains('Shortlist')")) {
+        	insertClearShortlistButton();
+        }
         addReloadListener('.container-fluid', insertInfoIcons);
     } else if($('#na_studentApplicationGrid').length) { // applications
     	changePointerOnApplicationRows();

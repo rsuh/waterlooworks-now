@@ -19,6 +19,8 @@
   "content_scripts": [
     {
       "matches": [
+        "https://waterlooworks.uwaterloo.ca/**",
+
         "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
         "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coopApplications.htm",
         "https://waterlooworks.uwaterloo.ca/myAccount/co-op/interviews-co-op.htm"
