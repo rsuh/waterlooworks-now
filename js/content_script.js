@@ -418,11 +418,11 @@ function removeFromShortlistCall(jobIds) {
     if (jobIds.length == 0) {
         return;
     }
-
     for (var i = 0; i < jobIds.length; i++) {
-        //ww toggles between adding/removing to/from shortlist
-
+        // ww toggles between adding/removing to/from shortlist
         var requestUrl = "/myAccount/co-op/coop-postings.htm";
+        // the following request is taken from ww source code and they use
+        // the given action and rand value.
         var request = {
             action : '_-_-aT7PkWG3HcGMas6Y975i3Y-eFTPiLZAlcBy6tR3i3OvIHMjea2kQyQ3gPNYrH2Ekef9Rp6_G55Q9M5cjaxU8QGNCua5vP79VgNJcHpZqwMr8dl27z4WtOCfEmh6RGtWAw1tFSFmYE8QxpwQ3eBSdgxc3vOBSeifAGdXNCUcCw_2viQnWnr9l',
             postingId: jobIds[i],
