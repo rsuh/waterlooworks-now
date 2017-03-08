@@ -343,7 +343,7 @@ function insertModalDiv() {
  }
 
 
-/* This function removes the "view" button from interviews page and 
+/* This function removes the "view" button from interviews page and
  * makes the whole row clickable.
  */
 function addInterviewsClickHandler() {
@@ -412,6 +412,57 @@ function insertAddToCalendarButton() {
         </var>
     </span>`).insertAfter($(".container-fluid .box"));
 }
+
+
+function removeFromShortlistCall(jobIds) {
+    if (jobIds.length == 0) {
+        return;
+    }
+    for (var i = 0; i < jobIds.length; i++) {
+        // ww toggles between adding/removing to/from shortlist
+        var requestUrl = "/myAccount/co-op/coop-postings.htm";
+        // the following request is taken from ww source code and they use
+        // the given action and rand value.
+        var request = {
+            action : '_-_-aT7PkWG3HcGMas6Y975i3Y-eFTPiLZAlcBy6tR3i3OvIHMjea2kQyQ3gPNYrH2Ekef9Rp6_G55Q9M5cjaxU8QGNCua5vP79VgNJcHpZqwMr8dl27z4WtOCfEmh6RGtWAw1tFSFmYE8QxpwQ3eBSdgxc3vOBSeifAGdXNCUcCw_2viQnWnr9l',
+            postingId: jobIds[i],
+            rand : Math.floor(Math.random()*100000)
+        };
+
+        $.post(controllerPath, request, function(data, status, xhr){
+            if (data && data.added) {
+                // if for some reason, the job was added to shortlist, lets make a second
+                // api call. This will ensure that job gets removed from the shortlist.
+                // Ideally, it should have removed the first time but because its ww,
+                // lets check atleast once.
+                $.post(controllerPath, request, function(data, status, xhr) {}, "json");
+            }
+        }, "json");
+    }
+
+}
+
+
+function clearShortlist() {
+    var jobids = [];
+    $.each($(".searchResult"), function () {
+        var indexOfJobTitle = $("th:contains('Job Title')").index();
+        var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
+
+        var queryparams = link.toString().split("?")[1].split("&");
+
+        for (var i = 0; i < queryparams.length; i++) {
+            var pair = queryparams[i].split("=");
+            if (pair[0].toLowerCase() == "postingid") {
+                jobids.push(pair[1]);
+                break;
+            }
+        }
+    });
+
+    removeFromShortlistCall(jobids);
+}
+
 
 $(document).ready(function() {
     if ($("#postingsTablePlaceholder").length) { // postings
