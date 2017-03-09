@@ -272,7 +272,6 @@ clicking the button */
 function insertInfoIcons() {
 	// gaurd to make sure we are not adding buttons more than once
 	if ($('.infoIcon')[0]) { return; }
-
 	$.each($(".searchResult"), function () {
 		let indexOfJobTitle = $("th:contains('Job Title')").index();
 		var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
@@ -343,7 +342,7 @@ function insertModalDiv() {
  }
 
 
-/* This function removes the "view" button from interviews page and 
+/* This function removes the "view" button from interviews page and
  * makes the whole row clickable.
  */
 function addInterviewsClickHandler() {
@@ -413,11 +412,81 @@ function insertAddToCalendarButton() {
     </span>`).insertAfter($(".container-fluid .box"));
 }
 
+function removeFromShortlistCall(jobIds, action) {
+    if (jobIds.length == 0) {
+        return;
+    }
+    var count = jobIds.length;
+    for (var i = 0; i < jobIds.length; i++) {
+        // ww toggles between adding/removing to/from shortlist
+        var requestUrl = "/myAccount/co-op/coop-postings.htm";
+        // the following request is taken from ww source code and they use
+        // the given action and rand value.
+        var request = {
+            action : action,
+            postingId: jobIds[i],
+            rand : Math.floor(Math.random()*100000)
+        };
+
+        $.post(requestUrl, request, function(data, status, xhr){
+            if (data && data.added) {
+                // if for some reason, the job was added to shortlist, lets make a second
+                // api call. This will ensure that job gets removed from the shortlist.
+                // Ideally, it should have removed the first time but because its ww,
+                // lets check atleast once.
+                $.post(requestUrl, request, function(data, status, xhr) {}, "json");
+            } else {
+            	count--;
+            	if (count == 0) {
+            		window.location.reload();
+            	}
+            }
+        }, "json");
+    }
+
+}
+
+function clearShortlist() {
+    var jobids = [];
+    $.each($(".searchResult"), function () {
+        var indexOfJobTitle = $("th:contains('Job Title')").index();
+        var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
+        var queryparams = link.toString().split("?")[1].split("&");
+
+        for (var i = 0; i < queryparams.length; i++) {
+            var pair = queryparams[i].split("=");
+            if (pair[0].toLowerCase() == "postingid") {
+                jobids.push(pair[1]);
+                break;
+            }
+        }
+    });
+    var script = $(".tab-content .row-fluid:eq(0) .span12 script:eq(0)").html();
+	var regex1 = /function saveFavoritePosting\(pId, priorityId, orderBy, sortDirection, currentPage, searchBy, keyword\)\n\s*\{\s*\n*var\srequest\s=\s\{\s+action.+\n/g;
+	var regex2 = /'(.*?)'/;
+	var action = regex2.exec(regex1.exec(script)[0])[0].replace("'","").replace("'","");
+    removeFromShortlistCall(jobids, action);
+}
+
+function insertClearShortlistButton() {
+	var imgURL = "url(" + chrome.extension.getURL("images/goose.png") + ")";
+	$("<button \
+		id='clear-shortlist-button' \
+		type='button'>Clear Shortlist \
+	</button>")
+	.css('background-image', imgURL)
+	.click(clearShortlist)
+	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
+}
+
 $(document).ready(function() {
     if ($("#postingsTablePlaceholder").length) { // postings
         insertCSSLinks();
         insertModalDiv();
         insertInfoIcons();
+        if ($(".orbisModuleHeader:contains('Shortlist')")) {
+        	insertClearShortlistButton();
+        }
         addReloadListener('.container-fluid', insertInfoIcons);
     } else if($('#na_studentApplicationGrid').length) { // applications
     	changePointerOnApplicationRows();
