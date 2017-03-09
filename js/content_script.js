@@ -484,7 +484,7 @@ $(document).ready(function() {
         insertCSSLinks();
         insertModalDiv();
         insertInfoIcons();
-        if ($(".orbisModuleHeader:contains('Shortlist')")) {
+        if ($(".orbisModuleHeader:contains('Shortlist')").length) {
         	insertClearShortlistButton();
         }
         addReloadListener('.container-fluid', insertInfoIcons);
