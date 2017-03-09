@@ -412,17 +412,18 @@ function insertAddToCalendarButton() {
     </span>`).insertAfter($(".container-fluid .box"));
 }
 
-function removeFromShortlistCall(jobIds) {
+function removeFromShortlistCall(jobIds, action) {
     if (jobIds.length == 0) {
         return;
     }
+    var count = jobIds.length;
     for (var i = 0; i < jobIds.length; i++) {
         // ww toggles between adding/removing to/from shortlist
         var requestUrl = "/myAccount/co-op/coop-postings.htm";
         // the following request is taken from ww source code and they use
         // the given action and rand value.
         var request = {
-            action : '_-_-aT7PkWG3HcGMas6Y975i3Y-eFTPiLZAlcBy6tR3i3OvIHMjea2kQyQ3gPNYrH2Ekef9Rp6_G55Q9M5cjaxU8QGNCua5vP79VgNJcHpZqwMr8dl27z4WtOCfEmh6RGtWAw1tFSFmYE8QxpwQ3eBSdgxc3vOBSeifAGdXNCUcCw_2viQnWnr9l',
+            action : action,
             postingId: jobIds[i],
             rand : Math.floor(Math.random()*100000)
         };
@@ -434,6 +435,11 @@ function removeFromShortlistCall(jobIds) {
                 // Ideally, it should have removed the first time but because its ww,
                 // lets check atleast once.
                 $.post(requestUrl, request, function(data, status, xhr) {}, "json");
+            } else {
+            	count--;
+            	if (count == 0) {
+            		window.location.reload();
+            	}
             }
         }, "json");
     }
@@ -445,7 +451,6 @@ function clearShortlist() {
     $.each($(".searchResult"), function () {
         var indexOfJobTitle = $("th:contains('Job Title')").index();
         var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
-
         var queryparams = link.toString().split("?")[1].split("&");
 
         for (var i = 0; i < queryparams.length; i++) {
@@ -456,8 +461,11 @@ function clearShortlist() {
             }
         }
     });
-
-    removeFromShortlistCall(jobids);
+    var script = $(".tab-content .row-fluid:eq(0) .span12 script:eq(0)").html();
+	var regex1 = /function saveFavoritePosting\(pId, priorityId, orderBy, sortDirection, currentPage, searchBy, keyword\)\n\s*\{\s*\n*var\srequest\s=\s\{\s+action.+\n/g;
+	var regex2 = /'(.*?)'/;
+	var action = regex2.exec(regex1.exec(script)[0])[0].replace("'","").replace("'","");
+    removeFromShortlistCall(jobids, action);
 }
 
 function insertClearShortlistButton() {
