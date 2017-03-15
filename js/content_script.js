@@ -1,3 +1,4 @@
+
 var reloadTimeout = null;
 var renderTimeout = null;
 
@@ -343,7 +344,8 @@ function insertModalDiv() {
 
 
 /* This function removes the "view" button from interviews page and
- * makes the whole row clickable.
+ * makes the whole row clickable. 
+ * Does not remove the "view" button for now
  */
 function addInterviewsClickHandler() {
 	if ($('tbody tr:eq(0) td:eq(0) a:eq(0)').length == 0) {
@@ -353,7 +355,8 @@ function addInterviewsClickHandler() {
 	$('thead td:eq(0)').remove();
 	$.each($('tbody tr'), function () {
 		$(this).attr("onclick", $(this).find('td:eq(0) a:eq(0)').attr("onclick"));
-		$(this).find("td:eq(0)").remove();
+		// This removes the "view" button but we're taking it out for now as it causes for some confusing UX
+		// $(this).find("td:eq(0)").remove(); 
 	});
 	clearTimeout(reloadTimeout);
 }
