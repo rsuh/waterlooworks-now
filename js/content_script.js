@@ -9,7 +9,9 @@ var renderTimeout = null;
  * @param {String} url - page url whose html we need to return
  * @return {String} - string defining the html of the page
  */
-function getJobPostingHTML(url) {
+
+// Deprecated. TODO: get rid of it in future
+function getJobPostingHTML(dataObj) {
 	return $.get(url, function(html) {
 		return html;
 	}).then((initialHTML) => {
@@ -28,6 +30,22 @@ function getJobPostingHTML(url) {
 			data: inputNameValues
 		});
 	})
+}
+
+function makePostingHtmlCall(params) {
+    return $.ajax({
+        type: "POST",
+        url: "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
+        data: params
+    });
+}
+
+function newGetJobPostingHTML(data1) {
+    return $.ajax({
+            type: "POST",
+            url: "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
+            data: data1
+    })
 }
 
 /* This function returns an array which contains the information to show.
@@ -179,7 +197,7 @@ function getGlassDoorInfo(companyName) {
 
  * @param {String} url - page url for job posting
  */
-function showJobInfoModal(url) {
+function showJobInfoModal(params) {
 	clearTimeout(renderTimeout);
 
 	$("#jobInfoModal").html('<div class="sk-circle">\
@@ -196,7 +214,7 @@ function showJobInfoModal(url) {
         <div class="sk-circle11 sk-child"></div>\
         <div class="sk-circle12 sk-child"></div>\
       </div>');
-	getJobPostingHTML(url).then((result) => {
+	makePostingHtmlCall(params).then((result) => {
 		let templateURL = chrome.extension.getURL("overlay_template.html")
 		$.get(templateURL, function(template) {
 			let infoArray = getInformationArray(result);
@@ -224,8 +242,8 @@ function showJobInfoModal(url) {
 				companyName: companyName,
 				jobTitle: jobTitle,
 				city: city,
-				tableContent: rowHTML,
-                jobUrl: url,
+				tableContent: rowHTML
+               // jobUrl: url,
 			};
 			getGlassDoorInfo(companyName).then((result) => {
 				let perfectMatch = result.response.employers.find(employer => {
@@ -268,18 +286,32 @@ function showJobInfoModal(url) {
 	});
 }
 
+function getParamsFromBuildFormFn(givenInp) {
+    //quick fix for now; we are manually getting rid of stuff we dont want
+    /*orbisApp.buildForm({'action':'_-_-idlTHtg7qBi3QMCuJazlWAvZHCOEfLsHsKXPt73fToH9YYjukHRxa44RLDv2F38rGjV8zdBQByZchhTfXok6AcYa6-GxUyYvPDZr72_ow_4tvxp9AzM4_ftHOZnssrYAKBJ7PdnqcqiuzuWI2zbQZd1YbOqjylm48Yu2woAHng','initialSearchAction':'displayMyProgramJobs','searchType':'','accessToPostings':'infoForPostings','postingId':'20840','npfGroup':'','sortDirection':'Reverse'}, '', '').submit();
+
+    we only want the passed first parameter
+    */
+    var params = givenInp.substring(19, givenInp.length - 19).toString(); //a quick fix for now. Probably will use regex in future
+    params = JSON.parse(params.replace(/'/g, '"')); //replace single quotes with double and parse
+    return params;
+}
+
 /* This function inserts info buttons into the page along with the action when
 clicking the button */
 function insertInfoIcons() {
 	// gaurd to make sure we are not adding buttons more than once
 	if ($('.infoIcon')[0]) { return; }
+
 	$.each($(".searchResult"), function () {
 		let indexOfJobTitle = $("th:contains('Job Title')").index();
-		var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
+
+        var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
+        var params = getParamsFromBuildFormFn($(link)[0].attributes[1].value);
         $(`<i class="infoIcon fa fa-info-circle"></i>`)
 		.attr({"data-toggle": "modal", "data-target": "#jobInfoModal"})
 		.click(function() {
-			showJobInfoModal(link.href);
+			showJobInfoModal(params);
 		})
 		.insertAfter(link);
 	});
@@ -344,7 +376,7 @@ function insertModalDiv() {
 
 
 /* This function removes the "view" button from interviews page and
- * makes the whole row clickable. 
+ * makes the whole row clickable.
  * Does not remove the "view" button for now
  */
 function addInterviewsClickHandler() {
@@ -356,7 +388,7 @@ function addInterviewsClickHandler() {
 	$.each($('tbody tr'), function () {
 		$(this).attr("onclick", $(this).find('td:eq(0) a:eq(0)').attr("onclick"));
 		// This removes the "view" button but we're taking it out for now as it causes for some confusing UX
-		// $(this).find("td:eq(0)").remove(); 
+		// $(this).find("td:eq(0)").remove();
 	});
 	clearTimeout(reloadTimeout);
 }
@@ -454,16 +486,19 @@ function clearShortlist() {
     $.each($(".searchResult"), function () {
         var indexOfJobTitle = $("th:contains('Job Title')").index();
         var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
-        var queryparams = link.toString().split("?")[1].split("&");
+        // var queryparams = link.toString().split("?")[1].split("&");
 
-        for (var i = 0; i < queryparams.length; i++) {
-            var pair = queryparams[i].split("=");
-            if (pair[0].toLowerCase() == "postingid") {
-                jobids.push(pair[1]);
-                break;
-            }
-        }
+        // for (var i = 0; i < queryparams.length; i++) {
+        //     var pair = queryparams[i].split("=");
+        //     if (pair[0].toLowerCase() == "postingid") {
+        //         jobids.push(pair[1]);
+        //         break;
+        //     }
+        // }
+        var params = getParamsFromBuildFormFn($(link)[0].attributes[1].value);
+        jobids.push(params.postingId.toString());
     });
+
     var script = $(".tab-content .row-fluid:eq(0) .span12 script:eq(0)").html();
 	var regex1 = /function saveFavoritePosting\(pId, priorityId, orderBy, sortDirection, currentPage, searchBy, keyword\)\n\s*\{\s*\n*var\srequest\s=\s\{\s+action.+\n/g;
 	var regex2 = /'(.*?)'/;
