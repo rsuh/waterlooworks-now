@@ -126,6 +126,7 @@ function getInformationArray(html) {
 						  	"Job - City",
 						  	"Special Job Requirements",
 						  	"Required Skills",
+							"Job Summary",
 							"Job Responsibilities",
 							"Compensation and Benefits Information"];
 
