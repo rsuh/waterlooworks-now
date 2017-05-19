@@ -12,10 +12,12 @@ Alternatively, you can clone this repo and add the project folder using 'Load Un
 ## Contributing
 
 1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
+2. Create your feature branch: `git checkout -b my-new-feature` off develop
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+5. Submit a pull request to develop
+6. ???
+7. Profit
 
 ## Feedback
 
