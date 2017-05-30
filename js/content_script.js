@@ -1,6 +1,7 @@
 
 var reloadTimeout = null;
 var renderTimeout = null;
+var dummyData = false;
 
 /* This function returns the html without opening a new tab for the page
  * accessed the param url. It is assumed that for WaterlooWorks the url will have
@@ -9,7 +10,6 @@ var renderTimeout = null;
  * @param {String} url - page url whose html we need to return
  * @return {String} - string defining the html of the page
  */
-
 // Deprecated. TODO: get rid of it in future
 function getJobPostingHTML(dataObj) {
 	return $.get(url, function(html) {
@@ -219,6 +219,9 @@ function showJobInfoModal(params) {
 		let templateURL = chrome.extension.getURL("overlay_template.html")
 		$.get(templateURL, function(template) {
 			let infoArray = getInformationArray(result);
+			if (dummyData) {
+				infoArray = getDummyInformationArray();
+			}
 			let companyName = ""
 			let city = ""
 			let jobTitle = ""
@@ -246,11 +249,14 @@ function showJobInfoModal(params) {
 				tableContent: rowHTML
                // jobUrl: url,
 			};
+			if(dummyData) {
+				companyName = "Google";
+			}
 			getGlassDoorInfo(companyName).then((result) => {
 				let perfectMatch = result.response.employers.find(employer => {
 					return employer.exactMatch;
 				});
-				// let glassDoorLink = result.response.attributionURL;
+
 				templateDictioary["glassDoorLink"] = result.response.attributionURL;
 				if (perfectMatch != null) {
 					templateDictioary["glassDoorRating"]
@@ -262,6 +268,9 @@ function showJobInfoModal(params) {
 						= perfectMatch.squareLogo !== null
 						&& perfectMatch.squareLogo !== ""
 						? perfectMatch.squareLogo : null;
+					if (dummyData) {
+						templateDictioary["squareLogo"] = "";
+					}
 					if (perfectMatch.website !== null
 						&& perfectMatch.website !== "") {
 						let companyWebsite = perfectMatch.website;
@@ -527,6 +536,9 @@ $(document).ready(function() {
         	insertClearShortlistButton();
         }
         addReloadListener('.container-fluid', insertInfoIcons);
+        if (dummyData) {
+        	insertDummyData();
+    	}
     } else if($('#na_studentApplicationGrid').length) { // applications
     	changePointerOnApplicationRows();
     	addReloadListener('#na_studentApplicationGrid', changePointerOnApplicationRows);
