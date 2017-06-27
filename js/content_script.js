@@ -1,4 +1,3 @@
-
 var reloadTimeout = null;
 var renderTimeout = null;
 
@@ -9,43 +8,12 @@ var renderTimeout = null;
  * @param {String} url - page url whose html we need to return
  * @return {String} - string defining the html of the page
  */
-
-// Deprecated. TODO: get rid of it in future
-function getJobPostingHTML(dataObj) {
-	return $.get(url, function(html) {
-		return html;
-	}).then((initialHTML) => {
-		var parsedInitialHtml = $.parseHTML(initialHTML);
-		var inputNameValues = new Object;
-
-		$.each(parsedInitialHtml[0], function(i, el) {
-			if (el && el.nodeName && el.nodeName.toLowerCase() === "input") {
-				inputNameValues[el.name] = el.value;
-			}
-		});
-
-		return $.ajax({
-			type: "POST",
-			url: "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
-			data: inputNameValues
-		});
-	})
-}
-
 function makePostingHtmlCall(params) {
     return $.ajax({
         type: "POST",
-        url: "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
+        url: API_URLS.WATERLOO_WORKS,
         data: params
     });
-}
-
-function newGetJobPostingHTML(data1) {
-    return $.ajax({
-            type: "POST",
-            url: "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
-            data: data1
-    })
 }
 
 /* This function returns an array which contains the information to show.
@@ -120,16 +88,7 @@ function getInformationArray(html) {
     }))[0].innerHTML;
 
 
-
   	var infoValueHTMLArray = [];
-  	const infoToInclude = ["Job Title",
-						  	"Job - City",
-						  	"Special Job Requirements",
-						  	"Required Skills",
-							"Job Summary",
-							"Job Responsibilities",
-							"Compensation and Benefits Information"];
-
 	// Assuming table has rows with two columns. First column describes the actual title such as "Location"
 	// and the second column has the value such as "London" in html
     // TODO; We can probably abstract this code out.
@@ -189,7 +148,7 @@ function getGlassDoorInfo(companyName) {
 
 	return $.ajax({
 			type: "GET",
-			url: "https://api.glassdoor.com/api/api.htm",
+			url: API_URLS.GLASSDOOR,
 			data: parameters
 	});
 }
@@ -216,7 +175,7 @@ function showJobInfoModal(params) {
         <div class="sk-circle12 sk-child"></div>\
       </div>');
 	makePostingHtmlCall(params).then((result) => {
-		let templateURL = chrome.extension.getURL("overlay_template.html")
+		let templateURL = chrome.extension.getURL("views/overlay_template.html")
 		$.get(templateURL, function(template) {
 			let infoArray = getInformationArray(result);
 			let companyName = ""
@@ -487,15 +446,6 @@ function clearShortlist() {
     $.each($(".searchResult"), function () {
         var indexOfJobTitle = $("th:contains('Job Title')").index();
         var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
-        // var queryparams = link.toString().split("?")[1].split("&");
-
-        // for (var i = 0; i < queryparams.length; i++) {
-        //     var pair = queryparams[i].split("=");
-        //     if (pair[0].toLowerCase() == "postingid") {
-        //         jobids.push(pair[1]);
-        //         break;
-        //     }
-        // }
         var params = getParamsFromBuildFormFn($(link)[0].attributes[1].value);
         jobids.push(params.postingId.toString());
     });

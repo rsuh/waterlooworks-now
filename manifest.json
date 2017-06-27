@@ -2,14 +2,14 @@
   "manifest_version": 2,
 
   "name": "Make WaterlooWorks Great Again",
-  "description": "This extension improves WaterlooWorks UI",
+  "description": "This extension improves WaterlooWorks UI/UX",
   "version": "1.4.0",
 
   "author": "Gurpreet Gill and Peyman Gardideh",
 
   "browser_action": {
     "default_icon": "images/icon.png",
-    "default_popup": "popup.html",
+    "default_popup": "views/popup.html",
     "default_title": "MWGA"
   },
   "permissions": [
@@ -20,23 +20,22 @@
     {
       "matches": [
         "https://waterlooworks.uwaterloo.ca/**",
-
         "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm",
         "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coopApplications.htm",
         "https://waterlooworks.uwaterloo.ca/myAccount/co-op/interviews-co-op.htm"
       ],
       "js": [
-        "js/jquery.min.js",
-        "js/mustache.min.js",
+        "js/external/jquery.min.js",
+        "js/external/mustache.min.js",
+        "js/global_config.js",
         "js/content_script.js"
       ]
     }
   ],
   "web_accessible_resources": [
     "images/*",
-    "css/content.css",
-    "css/spinkit.css",
-    "js/mustache.min.js",
-    "overlay_template.html"
+    "css/*",
+    "js/**/external/*",
+    "views/*"
   ]
 }
