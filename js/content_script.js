@@ -102,7 +102,6 @@ function getInformationArray(html) {
         }
     })
 
-
 	$('tr', $(jobPostingTableHtml)).toArray().forEach(row => {
 		for(var i = 0; i < infoToInclude.length; i++) {
 			if (row && row.children && row.children[0] && row.children[0].innerHTML &&
@@ -159,29 +158,19 @@ function getGlassDoorInfo(companyName) {
  */
 function showJobInfoModal(params) {
 	clearTimeout(renderTimeout);
-
-	$("#jobInfoModal").html('<div class="sk-circle">\
-        <div class="sk-circle1 sk-child"></div>\
-        <div class="sk-circle2 sk-child"></div>\
-        <div class="sk-circle3 sk-child"></div>\
-        <div class="sk-circle4 sk-child"></div>\
-        <div class="sk-circle5 sk-child"></div>\
-        <div class="sk-circle6 sk-child"></div>\
-        <div class="sk-circle7 sk-child"></div>\
-        <div class="sk-circle8 sk-child"></div>\
-        <div class="sk-circle9 sk-child"></div>\
-        <div class="sk-circle10 sk-child"></div>\
-        <div class="sk-circle11 sk-child"></div>\
-        <div class="sk-circle12 sk-child"></div>\
-      </div>');
+    let loadingSpinnerHtml = '<div class="sk-circle">';
+    for (var i = 1 ; i <= 12; i++) {
+        loadingSpinnerHtml += `<div class="sk-circle${i} sk-child"></div>`;
+    }
+	$("#jobInfoModal").html(loadingSpinnerHtml);
 	makePostingHtmlCall(params).then((result) => {
 		let templateURL = chrome.extension.getURL("views/overlay_template.html")
 		$.get(templateURL, function(template) {
 			let infoArray = getInformationArray(result);
-			let companyName = ""
-			let city = ""
-			let jobTitle = ""
-			var rowHTML = ""
+			let companyName = "";
+			let city = "";
+			let jobTitle = "";
+			let rowHTML = "";
 			for (var i = 0; i < infoArray.length; i++) {
 				let row = infoArray[i];
 				if (row.title.toLowerCase() === "organization") {
@@ -302,14 +291,7 @@ function importAddToCalender() {
     .attr({"href": "https://addtocalendar.com/atc/1.5/atc-style-blue.css", "rel": "stylesheet"})
     .appendTo($("head"));
 
-    $(`<script type="text/javascript">(function () {
-            if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
-            if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
-                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
-                s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
-                s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
-                var h = d[g]('body')[0];h.appendChild(s); }})();
-    </script>`).appendTo($("head"));
+    $(SCRIPT_TAGS.ADD_TO_CALENDAR).appendTo($("head"));
 }
 
 /* This function inserts a blank modal into the page */
@@ -394,6 +376,7 @@ function insertAddToCalendarButton() {
   	let location = $("tr:contains('Where') td:eq(1)")[0].innerText;
   	let privacy = "private";
 
+    // todo: use mustache for this
   	$(`<span class="addtocalendar atc-style-blue">
         <var class="atc_event">
             <var class="atc_date_start">${eventStart}</var>
