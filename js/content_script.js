@@ -265,8 +265,6 @@ function modifyJobTitleCol() {
 			}
 		}
 
-		
-
 		// Add classes to the new tags (if available)
 		for(var i = 0; i < td[0].children.length; i++) {
 			var child = td[0].children[i];
@@ -275,7 +273,7 @@ function modifyJobTitleCol() {
 			}
 		}
 	
-		// WW updated their UI, which resulted in the info button sometimes getting choped off.
+		// WW updated their UI, which resulted in the info button sometimes getting chopped off.
 		// The following css fixes the issue
 		td.css({
 			"white-space": "normal",
@@ -291,7 +289,7 @@ function modifyJobTitleCol() {
 		})
 		.insertAfter(link);
 	});
-	// Incase we are running this function on page change!
+	// Incase we are running this function cuz of page change!
 	showHideNewButtonHandler(2);
 	clearTimeout(reloadTimeout);
 }
@@ -508,10 +506,9 @@ function showHideNewButtonHandler(code) {
 		showNewTag(buttonID);
 	}
 
-	// If we just wanted to confirm, then break.// If we just wanted to confirm, then return.
+	// If we just wanted to confirm, then break. If we just wanted to confirm, then return.
 	// Otherwise, go on and reverse the behaviour
 	if (code == 2) return; 
-
 
 	if (hasHidingClass) {
 		showNewTag(buttonID);
