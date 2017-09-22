@@ -27,7 +27,7 @@
       "js": [
         "js/external/jquery.min.js",
         "js/external/mustache.min.js",
-        "js/global_config.js",
+        "js/constants.js",
         "js/content_script.js"
       ]
     }
