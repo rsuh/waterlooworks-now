@@ -1,9 +1,9 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "Make WaterlooWorks Great Again",
-  "description": "This extension improves WaterlooWorks UI/UX",
-  "version": "1.4.0",
+  "description": "This extension enhances the WaterlooWorks user experience by adding features such as a popup job info modal, glassdoor ratings, saving interviews to multiple calendars etc.",
+  "version": "1.5.0",
 
   "author": "Gurpreet Gill and Peyman Gardideh",
 
