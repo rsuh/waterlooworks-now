@@ -1,3 +1,13 @@
+const CLASS_NAMES = {
+    "NEW_TAG": "new-label-MWGA-class",
+    "SHOWING_NEW_TAG": "show-new-lable-MWGA-class",
+    "HIDING_NEW_TAG": "hide-new-lable-MWGA-class"
+};
+
+const ID_NAMES = {
+    "SHOW_HIDE_NEW_TAG": "show-hide-button-MWGA-id"
+}
+
 const API_URLS = {
 	"GLASSDOOR": "https://api.glassdoor.com/api/api.htm",
 	"WATERLOO_WORKS": "https://waterlooworks.uwaterloo.ca/myAccount/co-op/coop-postings.htm"
