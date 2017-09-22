@@ -156,7 +156,7 @@ function getGlassDoorInfo(companyName) {
 
  * @param {String} url - page url for job posting
  */
-function showJobInfoModal(params, onClickURL) {
+function showJobInfoModal(params, postingPageAction) {
 	clearTimeout(renderTimeout);
     let loadingSpinnerHtml = '<div class="sk-circle">';
     for (var i = 1 ; i <= 12; i++) {
@@ -219,7 +219,7 @@ function showJobInfoModal(params, onClickURL) {
 						templateDictioary["companyWebsite"] = companyWebsite;
 					}
 				}
-				templateDictioary["onClickURL"] = onClickURL;
+				templateDictioary["postingPageAction"] = postingPageAction;
 				let rendered = Mustache.render(template, templateDictioary);
 				renderTimeout = setTimeout(function () {
 					$("#jobInfoModal").html(rendered);
@@ -257,11 +257,11 @@ function modifyJobTitleCol() {
 		var td = $(this).find(`td:eq(${indexOfJobTitle})`);
 
 		var firstColChildren = $(this).find("td:eq(0)")[0].children;
-		var newTabUrl = ""
+		var postingPageAction = ""
 		for (var x = 0; x < firstColChildren.length; x++) {
 			if ($(firstColChildren[x])[0].innerText.toLowerCase().includes("view")) {
 				// Getting the open in new tab action from View -> DropDown -> New
-				newTabUrl = firstColChildren[x].children[1].children[1].children[0].attributes.onclick.value;
+				postingPageAction = firstColChildren[x].children[1].children[1].children[0].attributes.onclick.value;
 			}
 		}
 
@@ -285,12 +285,12 @@ function modifyJobTitleCol() {
         $(`<i class="infoIcon fa fa-info-circle"></i>`)
 		.attr({"data-toggle": "modal", "data-target": "#jobInfoModal"})
 		.click(function() {
-			showJobInfoModal(params, newTabUrl);
+			showJobInfoModal(params, postingPageAction);
 		})
 		.insertAfter(link);
 	});
 	// Incase we are running this function cuz of page change!
-	showHideNewButtonHandler(2);
+	configureShowHideNewTag();
 	clearTimeout(reloadTimeout);
 }
 
@@ -493,22 +493,24 @@ function showNewTag(buttonID) {
 	$(buttonID)[0].innerText = "Hide New Tags";
 }
 
-function showHideNewButtonHandler(code) {
+
+function configureShowHideNewTag() {
 	var buttonID = `#${ID_NAMES.SHOW_HIDE_NEW_TAG}`;
 	var hasHidingClass = $(buttonID).attr("class").includes(CLASS_NAMES.HIDING_NEW_TAG);
-	var hasShowingClass = $(buttonID).attr("class").includes(CLASS_NAMES.SHOWING_NEW_TAG);
+	var hasShowingClass = $(buttonID).attr("class").includes(CLASS_NAMES.SHOWING_NEW_TAG);	
 
-	// Confirm the current behavior. If we are suppose to be showing then make sure we are
-	// If hiding, make sure we are hiding
 	if (hasHidingClass) {
 		hideNewTag(buttonID);
 	} else if (hasShowingClass) {
 		showNewTag(buttonID);
 	}
+}
 
-	// If we just wanted to confirm, then break. If we just wanted to confirm, then return.
-	// Otherwise, go on and reverse the behaviour
-	if (code == 2) return; 
+function showHideNewButtonHandler() {
+	var buttonID = `#${ID_NAMES.SHOW_HIDE_NEW_TAG}`;
+	var hasHidingClass = $(buttonID).attr("class").includes(CLASS_NAMES.HIDING_NEW_TAG);
+	var hasShowingClass = $(buttonID).attr("class").includes(CLASS_NAMES.SHOWING_NEW_TAG);
+
 
 	if (hasHidingClass) {
 		showNewTag(buttonID);

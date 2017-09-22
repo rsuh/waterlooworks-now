@@ -52,8 +52,12 @@
     overflow-y: scroll !important;
 }
 
-.job-title-modal-MWGA {
+#jobInfoModal a {
     cursor: pointer;
+}
+
+#jobInfoModal a:hover {
+    text-decoration: none;
 }
 
 .goose-button {
