@@ -52,7 +52,11 @@
     overflow-y: scroll !important;
 }
 
-#clear-shortlist-button {
+.job-title-modal-MWGA {
+    cursor: pointer;
+}
+
+.goose-button {
     /*background: rgb(66,129,244);
     padding: 5px 15px;
     vertical-align: middle;
@@ -61,13 +65,13 @@
     border: 1px solid rgb(186,186,186);
 */
     margin-bottom: 10px;
-    padding: 7px 35px;
+    padding: 3px 30px;
     color: #fff;
     font-family: "Verdana";
     font-size: 14px;
     text-decoration: none;
     outline: none;
-    line-height: 20px;
+    line-height: 18px;
     vertical-align: middle;
     background: #005baa;
     background-position: right bottom; /*Positioning*/

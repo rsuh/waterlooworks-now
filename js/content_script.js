@@ -156,7 +156,7 @@ function getGlassDoorInfo(companyName) {
 
  * @param {String} url - page url for job posting
  */
-function showJobInfoModal(params) {
+function showJobInfoModal(params, onClickURL) {
 	clearTimeout(renderTimeout);
     let loadingSpinnerHtml = '<div class="sk-circle">';
     for (var i = 1 ; i <= 12; i++) {
@@ -219,7 +219,7 @@ function showJobInfoModal(params) {
 						templateDictioary["companyWebsite"] = companyWebsite;
 					}
 				}
-
+				templateDictioary["onClickURL"] = onClickURL;
 				let rendered = Mustache.render(template, templateDictioary);
 				renderTimeout = setTimeout(function () {
 					$("#jobInfoModal").html(rendered);
@@ -248,22 +248,51 @@ function getParamsFromBuildFormFn(givenInp) {
 
 /* This function inserts info buttons into the page along with the action when
 clicking the button */
-function insertInfoIcons() {
+function modifyJobTitleCol() {
 	// gaurd to make sure we are not adding buttons more than once
 	if ($('.infoIcon')[0]) { return; }
 
 	$.each($(".searchResult"), function () {
 		let indexOfJobTitle = $("th:contains('Job Title')").index();
+		var td = $(this).find(`td:eq(${indexOfJobTitle})`);
 
-        var link = $(this).find(`td:eq(${indexOfJobTitle})`).find('a')[0];
+		var firstColChildren = $(this).find("td:eq(0)")[0].children;
+		var newTabUrl = ""
+		for (var x = 0; x < firstColChildren.length; x++) {
+			if ($(firstColChildren[x])[0].innerText.toLowerCase().includes("view")) {
+				// Getting the open in new tab action from View -> DropDown -> New
+				newTabUrl = firstColChildren[x].children[1].children[1].children[0].attributes.onclick.value;
+			}
+		}
+
+		
+
+		// Add classes to the new tags (if available)
+		for(var i = 0; i < td[0].children.length; i++) {
+			var child = td[0].children[i];
+			if (child.tagName.toLowerCase() == "span" && child.innerHTML.toLowerCase().includes("new")) {
+				$(child).addClass(CLASS_NAMES.NEW_TAG);
+			}
+		}
+	
+		// WW updated their UI, which resulted in the info button sometimes getting choped off.
+		// The following css fixes the issue
+		td.css({
+			"white-space": "normal",
+			"min-width": "200px"
+		});
+
+        var link = td.find('a')[0];
         var params = getParamsFromBuildFormFn($(link)[0].attributes[1].value);
         $(`<i class="infoIcon fa fa-info-circle"></i>`)
 		.attr({"data-toggle": "modal", "data-target": "#jobInfoModal"})
 		.click(function() {
-			showJobInfoModal(params);
+			showJobInfoModal(params, newTabUrl);
 		})
 		.insertAfter(link);
 	});
+	// Incase we are running this function on page change!
+	showHideNewButtonHandler(2);
 	clearTimeout(reloadTimeout);
 }
 
@@ -312,7 +341,7 @@ function insertModalDiv() {
         if(reloadTimeout) {
             clearTimeout(reloadTimeout);
         }
-        reloadTimeout = setTimeout(reloadFunction, 700);
+        reloadTimeout = setTimeout(reloadFunction, 600);
     });
  }
 
@@ -442,8 +471,8 @@ function clearShortlist() {
 
 function insertClearShortlistButton() {
 	var imgURL = "url(" + chrome.extension.getURL("images/goose.png") + ")";
-	$("<button \
-		id='clear-shortlist-button' \
+	$("<button \ \
+		class='goose-button'\
 		type='button'>Clear Shortlist \
 	</button>")
 	.css('background-image', imgURL)
@@ -451,15 +480,68 @@ function insertClearShortlistButton() {
 	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
 }
 
+function hideNewTag(buttonID) {
+	$(buttonID).removeClass(CLASS_NAMES.SHOWING_NEW_TAG)
+			   .addClass(CLASS_NAMES.HIDING_NEW_TAG);
+	$(`.${CLASS_NAMES.NEW_TAG}`).hide();
+	$(buttonID)[0].innerText = "Show New Tags";
+}
+
+function showNewTag(buttonID) {
+	$(buttonID).removeClass(CLASS_NAMES.HIDING_NEW_TAG)
+			   .addClass(CLASS_NAMES.SHOWING_NEW_TAG);
+
+	$(`.${CLASS_NAMES.NEW_TAG}`).show();
+	$(buttonID)[0].innerText = "Hide New Tags";
+}
+
+function showHideNewButtonHandler(code) {
+	var buttonID = `#${ID_NAMES.SHOW_HIDE_NEW_TAG}`;
+	var hasHidingClass = $(buttonID).attr("class").includes(CLASS_NAMES.HIDING_NEW_TAG);
+	var hasShowingClass = $(buttonID).attr("class").includes(CLASS_NAMES.SHOWING_NEW_TAG);
+
+	// Confirm the current behavior. If we are suppose to be showing then make sure we are
+	// If hiding, make sure we are hiding
+	if (hasHidingClass) {
+		hideNewTag(buttonID);
+	} else if (hasShowingClass) {
+		showNewTag(buttonID);
+	}
+
+	// If we just wanted to confirm, then break.// If we just wanted to confirm, then return.
+	// Otherwise, go on and reverse the behaviour
+	if (code == 2) return; 
+
+
+	if (hasHidingClass) {
+		showNewTag(buttonID);
+	} else if (hasShowingClass) {
+		hideNewTag(buttonID);
+	}
+}
+
+function insertShowHideNewButton() {
+	var imgURL = "url(" + chrome.extension.getURL("images/goose.png") + ")";
+	$(`<button \
+		class='goose-button ${CLASS_NAMES.SHOWING_NEW_TAG}' \
+		id='${ID_NAMES.SHOW_HIDE_NEW_TAG}' \
+		type='button'>Hide New Tags\
+	</button>`)
+	.click(showHideNewButtonHandler)
+	.css("background-image", imgURL)
+	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
+}
+
 $(document).ready(function() {
     if ($("#postingsTablePlaceholder").length) { // postings
         insertCSSLinks();
         insertModalDiv();
-        insertInfoIcons();
+        insertShowHideNewButton();
+        modifyJobTitleCol();
         if ($(".orbisModuleHeader:contains('Shortlist')").length) {
         	insertClearShortlistButton();
         }
-        addReloadListener('.container-fluid', insertInfoIcons);
+        addReloadListener('.container-fluid', modifyJobTitleCol);
     } else if($('#na_studentApplicationGrid').length) { // applications
     	changePointerOnApplicationRows();
     	addReloadListener('#na_studentApplicationGrid', changePointerOnApplicationRows);
