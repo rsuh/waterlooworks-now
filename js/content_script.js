@@ -311,6 +311,12 @@ function insertCSSLinks() {
     $('<link> </link>')
     .attr({"href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css", "rel": "stylesheet"})
     .insertAfter(titleTag);
+
+
+    // jquery-ui css file
+	$('<link> </link>')
+	.attr({"href": chrome.extension.getURL("css/jquery-ui.min.css"), "rel": "stylesheet"})
+	.insertAfter(titleTag);
 }
 
 function importAddToCalender() {
