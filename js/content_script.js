@@ -458,7 +458,7 @@ function confirmDialog(event) {
 				'title': message,
 				'left': 'No',
 				'right': 'Yes',
-				'class': 'testing',
+				'class': '',
 				modal: true,
 				fn: function(e) {
 						console.log(e);
