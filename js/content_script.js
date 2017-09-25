@@ -291,6 +291,15 @@ function modifyJobTitleCol() {
 	});
 	// Incase we are running this function cuz of page change!
 	configureShowHideNewTag();
+
+    $.each($(".favourite"), function () {
+        if ($(this).html().trim() === "Unshortlist") {
+            $(this).addClass("unshortlist");
+        } else {
+            $(this).removeClass("unshortlist");
+        }
+    });
+
 	clearTimeout(reloadTimeout);
 }
 
@@ -530,6 +539,8 @@ function insertShowHideNewButton() {
 	.css("background-image", imgURL)
 	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
 }
+
+
 
 $(document).ready(function() {
     if ($("#postingsTablePlaceholder").length) { // postings
