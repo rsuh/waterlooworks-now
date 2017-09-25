@@ -1,16 +1,16 @@
 {
   "manifest_version": 2,
 
-  "name": "Make WaterlooWorks Great Again",
+  "name": "WaterlooWorks Now",
   "description": "This extension enhances the WaterlooWorks UX by adding features such as a popup job info modal, glassdoor ratings etc.",
-  "version": "1.5.0",
+  "version": "1.5.3",
 
   "author": "Gurpreet Gill and Peyman Gardideh",
 
   "browser_action": {
-    "default_icon": "images/icon.png",
+    "default_icon": "media/icon400x400.png",
     "default_popup": "views/popup.html",
-    "default_title": "MWGA"
+    "default_title": "WaterlooWorks Now"
   },
   "permissions": [
     "https://waterlooworks.uwaterloo.ca/myAccount/**",
@@ -33,7 +33,7 @@
     }
   ],
   "web_accessible_resources": [
-    "images/*",
+    "assets/*",
     "css/*",
     "js/**/external/*",
     "views/*"
