@@ -452,7 +452,7 @@ function removeFromShortlistCall(jobIds, action) {
 }
 function confirmDialog(event) {
 		var message = event.data.message;
-		var callback = event.data.callback;
+		var confirmCallback = event.data.confirmCallback;
 
 		Notify.confirm({
 				'title': message,
@@ -461,8 +461,7 @@ function confirmDialog(event) {
 				'class': '',
 				modal: true,
 				fn: function(e) {
-						console.log(e);
-						if (e === "success") { callback(); }
+						if (e === "success") { confirmCallback(); }
 				}
 		});
 }
@@ -491,7 +490,7 @@ function insertClearShortlistButton() {
 		type='button'>Clear Shortlist \
 	</button>")
 	.css('background-image', imgURL)
-	.click({message: "Are you sure?", callback: clearShortlist}, confirmDialog)
+	.click({message: "Are you sure?", confirmCallback: clearShortlist}, confirmDialog)
 	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
 }
 
