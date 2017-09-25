@@ -204,6 +204,8 @@ function showJobInfoModal(params, postingPageAction) {
                         = perfectMatch.numberOfRatings !== null
                         && perfectMatch.numberOfRatings !== 0
                         ? perfectMatch.numberOfRatings : null;
+                    templateDictioary["hasMultipleGlassdoorRatings"]
+                    	= perfectMatch.numberOfRatings > 1;
 					templateDictioary["glassDoorRating"]
 						= perfectMatch.overallRating !== null
 						&& perfectMatch.overallRating !== "0"

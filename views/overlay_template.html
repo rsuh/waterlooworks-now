@@ -18,7 +18,7 @@
 
 			</div>
 			<div class="row">
-				<div class="col-xs-10">
+				<div class="no-padding-margin">
 					<h2>
 						<a target="_self" onclick="{{{postingPageAction}}}" id="modal-job-title">{{{jobTitle}}}</a>
 						{{#city}}
@@ -27,14 +27,11 @@
 					</h2>
 
 				</div>
-				<div class="col-xs-2 glassdoor-info">
+				<div class="glassdoor-info no-padding-margin">
 				{{#glassDoorLink}}
 					<h2><a href='{{glassDoorLink}}' target="_blank">
 						{{#glassDoorRating}}
 							Company Rating: {{glassDoorRating}}/5.0
-							{{#glassDoorNumRatings}}
-							({{glassDoorNumRatings}} Ratings)
-							{{/glassDoorNumRatings}}
 						{{/glassDoorRating}}
 						{{^glassDoorRating}}
 							Search it!
@@ -47,6 +44,14 @@
 							<img src='https://www.glassdoor.com/static/img/api/glassdoor_logo_80.png'
 							title='{{Job Search}}'/></a>
 						</span>
+
+						{{#glassDoorNumRatings}}
+							<div class="glassdoor-number-ratings">
+								based on {{glassDoorNumRatings}} 
+								rating{{#hasMultipleGlassdoorRatings}}s{{/hasMultipleGlassdoorRatings}}
+							</div>
+						{{/glassDoorNumRatings}}
+						
 					</h2>
 				{{/glassDoorLink}}
 
