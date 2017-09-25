@@ -272,7 +272,7 @@ function modifyJobTitleCol() {
 				$(child).addClass(CLASS_NAMES.NEW_TAG);
 			}
 		}
-	
+
 		// WW updated their UI, which resulted in the info button sometimes getting chopped off.
 		// The following css fixes the issue
 		td.css({
@@ -485,7 +485,7 @@ function clearShortlist() {
 }
 
 function insertClearShortlistButton() {
-	var imgURL = "url(" + chrome.extension.getURL("images/goose.png") + ")";
+	var imgURL = "url(" + chrome.extension.getURL("assets/gooseButtonIcon.png") + ")";
 	$("<button \ \
 		class='goose-button'\
 		type='button'>Clear Shortlist \
@@ -514,7 +514,7 @@ function showNewTag(buttonID) {
 function configureShowHideNewTag() {
 	var buttonID = `#${ID_NAMES.SHOW_HIDE_NEW_TAG}`;
 	var hasHidingClass = $(buttonID).attr("class").includes(CLASS_NAMES.HIDING_NEW_TAG);
-	var hasShowingClass = $(buttonID).attr("class").includes(CLASS_NAMES.SHOWING_NEW_TAG);	
+	var hasShowingClass = $(buttonID).attr("class").includes(CLASS_NAMES.SHOWING_NEW_TAG);
 
 	if (hasHidingClass) {
 		hideNewTag(buttonID);
@@ -537,7 +537,7 @@ function showHideNewButtonHandler() {
 }
 
 function insertShowHideNewButton() {
-	var imgURL = "url(" + chrome.extension.getURL("images/goose.png") + ")";
+	var imgURL = "url(" + chrome.extension.getURL("assets/gooseButtonIcon.png") + ")";
 	$(`<button \
 		class='goose-button ${CLASS_NAMES.SHOWING_NEW_TAG}' \
 		id='${ID_NAMES.SHOW_HIDE_NEW_TAG}' \
