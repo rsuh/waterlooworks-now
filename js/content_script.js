@@ -198,9 +198,12 @@ function showJobInfoModal(params, postingPageAction) {
 				let perfectMatch = result.response.employers.find(employer => {
 					return employer.exactMatch;
 				});
-				// let glassDoorLink = result.response.attributionURL;
 				templateDictioary["glassDoorLink"] = result.response.attributionURL;
 				if (perfectMatch != null) {
+                    templateDictioary["glassDoorNumRatings"]
+                        = perfectMatch.numberOfRatings !== null
+                        && perfectMatch.numberOfRatings !== 0
+                        ? perfectMatch.numberOfRatings : null;
 					templateDictioary["glassDoorRating"]
 						= perfectMatch.overallRating !== null
 						&& perfectMatch.overallRating !== "0"

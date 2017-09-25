@@ -32,6 +32,9 @@
 					<h2><a href='{{glassDoorLink}}' target="_blank">
 						{{#glassDoorRating}}
 							Company Rating: {{glassDoorRating}}/5.0
+							{{#glassDoorNumRatings}}
+							({{glassDoorNumRatings}} Ratings)
+							{{/glassDoorNumRatings}}
 						{{/glassDoorRating}}
 						{{^glassDoorRating}}
 							Search it!
