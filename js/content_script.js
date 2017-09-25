@@ -468,7 +468,7 @@ function clearShortlist() {
 }
 
 function insertClearShortlistButton() {
-	var imgURL = "url(" + chrome.extension.getURL("assets/goose.png") + ")";
+	var imgURL = "url(" + chrome.extension.getURL("assets/gooseButtonIcon.png") + ")";
 	$("<button \ \
 		class='goose-button'\
 		type='button'>Clear Shortlist \
@@ -520,7 +520,7 @@ function showHideNewButtonHandler() {
 }
 
 function insertShowHideNewButton() {
-	var imgURL = "url(" + chrome.extension.getURL("assets/goose.png") + ")";
+	var imgURL = "url(" + chrome.extension.getURL("assets/gooseButtonIcon.png") + ")";
 	$(`<button \
 		class='goose-button ${CLASS_NAMES.SHOWING_NEW_TAG}' \
 		id='${ID_NAMES.SHOW_HIDE_NEW_TAG}' \
