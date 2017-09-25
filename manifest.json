@@ -8,9 +8,9 @@
   "author": "Gurpreet Gill and Peyman Gardideh",
 
   "browser_action": {
-    "default_icon": "images/icon.png",
+    "default_icon": "images/icon400x400.png",
     "default_popup": "views/popup.html",
-    "default_title": "MWGA"
+    "default_title": "WaterlooWorks Now"
   },
   "permissions": [
     "https://waterlooworks.uwaterloo.ca/myAccount/**",
