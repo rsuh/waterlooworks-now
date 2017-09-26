@@ -536,7 +536,7 @@ $(document).ready(function() {
         insertCSSLinks();
         insertModalDiv();
         insertShowHideNewButton();
-        modifyJobTitleCol();
+        setTimeout(modifyJobTitleCol, 0);
         if ($(".orbisModuleHeader:contains('Shortlist')").length) {
         	insertClearShortlistButton();
         }
