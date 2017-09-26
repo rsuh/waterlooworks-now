@@ -28,6 +28,8 @@
         "js/external/jquery.min.js",
         "js/external/simple-modal.js",
         "js/external/mustache.min.js",
+        "js/external/tableExport/tableExport.js",
+        "js/external/tableExport/jquery.base64.js",
         "js/constants.js",
         "js/content_script.js"
       ]
