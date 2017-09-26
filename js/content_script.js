@@ -450,6 +450,22 @@ function removeFromShortlistCall(jobIds, action) {
     }
 
 }
+function confirmDialog(event) {
+		var message = event.data.message;
+		var confirmCallback = event.data.confirmCallback;
+
+		Notify.confirm({
+				'title': message,
+				'left': 'No',
+				'right': 'Yes',
+				'class': '',
+				modal: true,
+				fn: function(e) {
+						if (e === "success") { confirmCallback(); }
+				}
+		});
+}
+
 
 function clearShortlist() {
     var jobids = [];
@@ -474,7 +490,7 @@ function insertClearShortlistButton() {
 		type='button'>Clear Shortlist \
 	</button>")
 	.css('background-image', imgURL)
-	.click(clearShortlist)
+	.click({message: "Are you sure?", confirmCallback: clearShortlist}, confirmDialog)
 	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
 }
 
