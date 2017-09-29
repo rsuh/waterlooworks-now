@@ -571,10 +571,9 @@ function swapEmptyTD() {
   $("#postingsTable td:first").replaceWith("<th></th>");
 }
 
+// change name to addRowClickAction
 function replicateDashboardViewAction() {
-  console.log("wat");
   $.each($("#dashboard_userCommonMyMessagesTableID tr"), function () {
-    console.log("hello");
     $(this).attr("onclick", $(this).find('td:eq(0) a:eq(0)').attr("onclick"));
   });
 }
