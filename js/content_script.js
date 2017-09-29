@@ -495,7 +495,7 @@ function insertClearShortlistButton() {
   type='button'>Clear Shortlist \
   </button>")
   .css('background-image', imgURL)
-  .click(clearShortlist)
+  .click({message: "Are you sure?", confirmCallback: clearShortlist}, confirmDialog)
   .appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
 }
 
