@@ -2,8 +2,8 @@
   "manifest_version": 2,
 
   "name": "WaterlooWorks Now",
-  "description": "This extension enhances the WaterlooWorks UX by adding features such as a popup job info modal, glassdoor ratings etc.",
-  "version": "1.5.3",
+  "description": "Adds disruptive and innovative features to WaterlooWorks, improving its UI/UX",
+  "version": "1.6.0",
 
   "author": "Gurpreet Gill and Peyman Gardideh",
 
@@ -26,7 +26,10 @@
       ],
       "js": [
         "js/external/jquery.min.js",
+        "js/external/tableExport/jquery.base64.min.js",
+        "js/external/simple-modal.js",
         "js/external/mustache.min.js",
+        "js/external/tableExport/tableExport.min.js",
         "js/constants.js",
         "js/content_script.js"
       ]
