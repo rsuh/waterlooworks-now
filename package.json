@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "node-sass-chokidar": "^0.0.3",
+    "babel-compile": "^2.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "eslint": "^3.7.1"
+  },
+  "scripts": {
+
+    "compile": "yarn install; mkdir lib; babel-compile -p es2015 src/js:lib/js"
+  }
+}
