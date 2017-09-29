@@ -547,6 +547,25 @@ function insertShowHideNewButton() {
 	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
 }
 
+function insertExportAsExcelButton() {
+	var imgURL = "url(" + chrome.extension.getURL("assets/gooseButtonIcon.png") + ")";
+	$("<button \ \
+		class='goose-button'\
+		type='button'>Export Table\
+	</button>")
+	.css('background-image', imgURL)
+	.click(exportTableToExcel)
+	.appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
+}
+
+function exportTableToExcel() {
+  $('#postingsTable').tableExport({type:'excel', escape:'false', ignoreColumn: '[0, 1]'});
+}
+
+function swapEmptyTD() {
+  $("#postingsTable td:first").replaceWith("<th></th>");
+}
+
 $(document).ready(function() {
     if ($("#postingsTablePlaceholder").length) { // postings
         insertCSSLinks();
@@ -554,7 +573,9 @@ $(document).ready(function() {
         insertShowHideNewButton();
         setTimeout(modifyJobTitleCol, 0);
         if ($(".orbisModuleHeader:contains('Shortlist')").length) {
+          swapEmptyTD();
         	insertClearShortlistButton();
+          insertExportAsExcelButton();
         }
         addReloadListener('.container-fluid', modifyJobTitleCol);
     } else if($('#na_studentApplicationGrid').length) { // applications
