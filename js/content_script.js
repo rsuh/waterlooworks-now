@@ -455,6 +455,22 @@ function removeFromShortlistCall(jobIds, action) {
     }
 
 }
+function confirmDialog(event) {
+		var message = event.data.message;
+		var confirmCallback = event.data.confirmCallback;
+
+		Notify.confirm({
+				'title': message,
+				'left': 'No',
+				'right': 'Yes',
+				'class': '',
+				modal: true,
+				fn: function(e) {
+						if (e === "success") { confirmCallback(); }
+				}
+		});
+}
+
 
 function clearShortlist() {
     var jobids = [];
@@ -541,7 +557,7 @@ $(document).ready(function() {
         insertCSSLinks();
         insertModalDiv();
         insertShowHideNewButton();
-        modifyJobTitleCol();
+        setTimeout(modifyJobTitleCol, 0);
         if ($(".orbisModuleHeader:contains('Shortlist')").length) {
           insertClearShortlistButton();
         }
