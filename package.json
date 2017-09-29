@@ -3,13 +3,15 @@
     "node-sass-chokidar": "^0.0.3",
     "babel-compile": "^2.0.0",
     "babel-preset-es2015": "^6.24.1",
-    "npm-run-all": "^4.1.1",
-    "eslint": "^3.7.1"
+    "npm-run-all": "^4.1.1"
   },
   "scripts": {
+    "depend": "yarn install",
     "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o lib/",
     "build-es6": "babel-compile -p es2015 src/js:lib/js",
-    "build": "mkdir lib; npm-run-all -p build-es6 build-css",
-    "clean": "rm -r lib"
+    "build": "mkdir lib; npm-run-all depend; npm-run-all -p build-es6 build-css",
+    "clean": "rm -r lib",
+    "zip": "zip -r MMW.zip external lib assets views manifest.json LICENSE.txt",
+    "release": "npm-run-all depend build zip"
   }
 }
