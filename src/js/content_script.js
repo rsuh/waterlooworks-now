@@ -31,14 +31,13 @@ function getInformationArray(html) {
   var postingDivHtml = $($('#postingDiv', $(html))[0].innerHTML);
 
   var nodeFilter =  function(el, section) {
-  if (el && el.nodeName && el.nodeName.toLowerCase() === "div" &&
-      el.className && el.className === "panel panel-default" &&
-      el.innerText && el.innerText.includes(section)) {
-    return true;
-  } else {
-    return false;
-  }
-
+    if (el && el.nodeName && el.nodeName.toLowerCase() === "div" &&
+        el.className && el.className === "panel panel-default" &&
+        el.innerText && el.innerText.includes(section)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   var jobPostingNode = null;
@@ -304,12 +303,12 @@ function insertCSSLinks() {
   let titleTag = $("head").find("title");
 
   $('<link> </link>')
-  .attr({"href": chrome.extension.getURL("css/spinkit.css"), "rel": "stylesheet"})
+  .attr({"href": chrome.extension.getURL("external/css/spinkit.css"), "rel": "stylesheet"})
   .insertAfter(titleTag);
 
   // content.css
   $('<link> </link>')
-  .attr({"href": chrome.extension.getURL("css/content.css"), "rel": "stylesheet"})
+  .attr({"href": chrome.extension.getURL("lib/css/content.css"), "rel": "stylesheet"})
   .insertAfter(titleTag);
 
   // font-awesome css
@@ -453,8 +452,8 @@ function removeFromShortlistCall(jobIds, action) {
       }
     }, "json");
   }
-
 }
+
 function confirmDialog(event) {
     var message = event.data.message;
     var confirmCallback = event.data.confirmCallback;
@@ -495,7 +494,7 @@ function insertClearShortlistButton() {
   type='button'>Clear Shortlist \
   </button>")
   .css('background-image', imgURL)
-  .click(clearShortlist)
+  .click({message: "Are you sure?", confirmCallback: clearShortlist}, confirmDialog)
   .appendTo($(".tab-content .row-fluid:eq(0) .span12 .aaaa .row-fluid:eq(0)"));
 }
 

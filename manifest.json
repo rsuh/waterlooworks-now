@@ -25,20 +25,20 @@
         "https://waterlooworks.uwaterloo.ca/myAccount/co-op/interviews-co-op.htm"
       ],
       "js": [
-        "js/external/jquery.min.js",
-        "js/external/tableExport/jquery.base64.min.js",
-        "js/external/simple-modal.js",
-        "js/external/mustache.min.js",
-        "js/external/tableExport/tableExport.min.js",
-        "js/constants.js",
-        "js/content_script.js"
+        "external/js/jquery.min.js",
+        "external/js/tableExport/jquery.base64.min.js",
+        "external/js/simple-modal.js",
+        "external/js/mustache.min.js",
+        "external/js/tableExport/tableExport.min.js",
+        "lib/js/constants.js",
+        "lib/js/content_script.js"
       ]
     }
   ],
   "web_accessible_resources": [
+    "lib/css/*",
     "assets/*",
-    "css/*",
-    "js/**/external/*",
+    "external/*",
     "views/*"
   ]
 }
