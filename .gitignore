@@ -1,1 +1,5 @@
 *.sw[op]
+
+node_modules/
+yarn.lock
+lib/
